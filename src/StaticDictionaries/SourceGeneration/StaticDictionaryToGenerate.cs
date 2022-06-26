@@ -1,12 +1,12 @@
-﻿namespace Dictionaries.SourceGeneration;
+﻿namespace StaticDictionaries.SourceGeneration;
 
-public readonly struct DictionaryToGenerate
+public readonly struct StaticDictionaryToGenerate
 {
-    public DictionaryToGenerate(
+    public StaticDictionaryToGenerate(
         string name,
         string nameSpace,
         string fullyQualifiedName,
-        IReadOnlyCollection<DictionaryBase> properties,
+        IReadOnlyCollection<StaticDictionary> properties,
         bool isPublic)
     {
         Name = name;
@@ -24,5 +24,5 @@ public readonly struct DictionaryToGenerate
 
     public string Namespace { get; }
 
-    public IReadOnlyCollection<DictionaryBase> Properties { get; }
+    public IReadOnlyCollection<StaticDictionary> Properties { get; }
 }

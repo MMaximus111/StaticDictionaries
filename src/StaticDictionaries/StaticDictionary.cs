@@ -1,10 +1,11 @@
-﻿using System.Globalization;
+﻿using System.Collections;
+using System.Globalization;
 
-namespace Dictionaries;
+namespace StaticDictionaries;
 
-public abstract class DictionaryBase
+public abstract class StaticDictionary
 {
-    protected DictionaryBase(int id, string name)
+    protected StaticDictionary(int id, string name)
     {
         Id = id;
         Name = name;
@@ -14,24 +15,24 @@ public abstract class DictionaryBase
 
     public string? Name { get; }
 
-    public static bool operator !=(DictionaryBase x, DictionaryBase y)
+    public static bool operator !=(StaticDictionary x, StaticDictionary y)
     {
         return !(x == y);
     }
 
-    public static bool operator ==(DictionaryBase x, DictionaryBase y)
+    public static bool operator ==(StaticDictionary x, StaticDictionary y)
     {
         return Equals(x, y);
     }
 
     public static T[] Items<T>()
-        where T : DictionaryBase
+        where T : StaticDictionary
     {
-        return Dictionaries<T>.Value;
+        return StaticDictionaries<T>.Value;
     }
 
     public static T GetById<T>(int id)
-        where T : DictionaryBase
+        where T : StaticDictionary
     {
         T? item = Items<T>().FirstOrDefault(x => x.Id == id);
 
@@ -45,12 +46,12 @@ public abstract class DictionaryBase
 
     public override bool Equals(object? obj)
     {
-        return Equals(obj as DictionaryBase);
+        return Equals(obj as StaticDictionary);
     }
 
-    public bool Equals(DictionaryBase? dictionaryItem)
+    public bool Equals(StaticDictionary? staticDictionary)
     {
-        return dictionaryItem is not null && Id == dictionaryItem.Id;
+        return staticDictionary is not null && Id == staticDictionary.Id;
     }
 
     public override int GetHashCode()

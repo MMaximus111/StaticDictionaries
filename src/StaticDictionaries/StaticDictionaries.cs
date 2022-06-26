@@ -1,9 +1,9 @@
 ﻿using System.Reflection;
 
-namespace Dictionaries;
+namespace StaticDictionaries;
 
-internal static class Dictionaries<T>
-    where T : DictionaryBase
+internal static class StaticDictionaries<T>
+    where T : StaticDictionary
 {
     public static readonly T[] Value = typeof(T).GetProperties(BindingFlags.Public | BindingFlags.Static)
         .Select(x => x.GetValue(null))

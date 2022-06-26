@@ -1,10 +1,10 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dictionaries", "Dictionaries\Dictionaries.csproj", "{F0047297-F2D6-4580-81FE-CB1BE273996A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StaticDictionaries", "src\StaticDictionaries\StaticDictionaries.csproj", "{F0047297-F2D6-4580-81FE-CB1BE273996A}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{0A33D3A6-E3E1-4F75-AFB2-C90850D3A40C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dictionaries.Tests", "Dictionaries.Tests\Dictionaries.Tests.csproj", "{45EEB3BA-5BCC-46B2-A74E-6B4DF2A42550}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StaticDictionaries.Tests", "src\StaticDictionaries.Tests\StaticDictionaries.Tests.csproj", "{45EEB3BA-5BCC-46B2-A74E-6B4DF2A42550}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
