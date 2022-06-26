@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dictionaries", "Dictionaries\Dictionaries.csproj", "{F0047297-F2D6-4580-81FE-CB1BE273996A}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{0A33D3A6-E3E1-4F75-AFB2-C90850D3A40C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dictionaries.Tests", "Dictionaries.Tests\Dictionaries.Tests.csproj", "{45EEB3BA-5BCC-46B2-A74E-6B4DF2A42550}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{F0047297-F2D6-4580-81FE-CB1BE273996A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F0047297-F2D6-4580-81FE-CB1BE273996A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F0047297-F2D6-4580-81FE-CB1BE273996A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F0047297-F2D6-4580-81FE-CB1BE273996A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{45EEB3BA-5BCC-46B2-A74E-6B4DF2A42550}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{45EEB3BA-5BCC-46B2-A74E-6B4DF2A42550}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{45EEB3BA-5BCC-46B2-A74E-6B4DF2A42550}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{45EEB3BA-5BCC-46B2-A74E-6B4DF2A42550}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{F0047297-F2D6-4580-81FE-CB1BE273996A} = {0A33D3A6-E3E1-4F75-AFB2-C90850D3A40C}
+		{45EEB3BA-5BCC-46B2-A74E-6B4DF2A42550} = {0A33D3A6-E3E1-4F75-AFB2-C90850D3A40C}
+	EndGlobalSection
+EndGlobal
