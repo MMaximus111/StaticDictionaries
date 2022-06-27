@@ -1,8 +1,15 @@
-﻿namespace StaticDictionaries.SourceGeneration;
+﻿namespace StaticDictionaries.SourceGeneration.Attributes;
 
-[AttributeUsage(AttributeTargets.Class)]
-public class SourceGenerationAttribute : System.Attribute
+[AttributeUsage(AttributeTargets.Enum)]
+public class StaticDictionaryAttribute : Attribute
 {
+    public StaticDictionaryAttribute(params string[] propertyNames)
+    {
+        PropertyNames = propertyNames;
+    }
+
+    public string[] PropertyNames { get; }
+
     /// <summary>
     /// The namespace to generate the extension class.
     /// If not provided the namespace of the class will be used

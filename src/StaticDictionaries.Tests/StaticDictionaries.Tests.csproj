@@ -7,11 +7,11 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\StaticDictionaries\StaticDictionaries.csproj"/>
-        <PackageReference Include="FluentAssertions" Version="6.7.0"/>
+        <ProjectReference Include="..\StaticDictionaries\StaticDictionaries.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="true" />
+        <PackageReference Include="FluentAssertions" Version="6.7.0" />
         <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.11.0" />
         <PackageReference Include="Verify.Xunit" Version="14.3.0" />
-        <PackageReference Include="xunit" Version="2.4.1"/>
+        <PackageReference Include="xunit" Version="2.4.1" />
 
         <PackageReference Include="xunit.runner.visualstudio" Version="2.4.3">
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>

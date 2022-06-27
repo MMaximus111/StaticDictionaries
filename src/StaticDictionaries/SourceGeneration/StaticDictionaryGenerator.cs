@@ -1,42 +1,45 @@
 ﻿using System.Collections.Immutable;
+using System.Diagnostics;
 using System.Text;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Text;
+using StaticDictionaries.SourceGeneration.Attributes;
 
 namespace StaticDictionaries.SourceGeneration;
 
 [Generator]
 public class StaticDictionaryGenerator : IIncrementalGenerator
 {
-    private const string DisplayAttribute = "System.ComponentModel.DataAnnotations.DisplayAttribute";
-    private const string AttributeFullName = $"StaticDictionaries.SourceGeneration.{AttributeName}";
-    private const string AttributeName = nameof(SourceGenerationAttribute);
+    private const string StaticDictionaryAttributeFullName = $"StaticDictionaries.SourceGeneration.Attributes.{StaticDictionaryAttributeName}";
+    private const string StaticDictionaryAttributeName = nameof(StaticDictionaryAttribute);
+
+    private const string ValueAttributeFullName = $"StaticDictionaries.SourceGeneration.Attributes.{ValueAttributeName}";
+    private const string ValueAttributeName = nameof(ValueAttribute);
 
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
-        // context.RegisterPostInitializationOutput(ctx => ctx.AddSource(
-        //     $"{AttributeName}.g.cs", SourceText.From(SourceGenerationHelper.Attribute, Encoding.UTF8)));
+        Debugger.Launch();
 
-        IncrementalValuesProvider<ClassDeclarationSyntax> staticDictionaryDeclarations = context.SyntaxProvider
+        IncrementalValuesProvider<EnumDeclarationSyntax> staticDictionaryDeclarations = context.SyntaxProvider
             .CreateSyntaxProvider(
                 predicate: static (s, _) => IsSyntaxTargetForGeneration(s),
                 transform: static (ctx, _) => GetSemanticTargetForGeneration(ctx))
             .Where(static m => m is not null)!;
 
-        IncrementalValueProvider<(Compilation, ImmutableArray<ClassDeclarationSyntax>)> compilationAndEnums
+        IncrementalValueProvider<(Compilation, ImmutableArray<EnumDeclarationSyntax>)> compilationAndEnums
             = context.CompilationProvider.Combine(staticDictionaryDeclarations.Collect());
 
         context.RegisterSourceOutput(compilationAndEnums, static (spc, source) => Execute(source.Item1, source.Item2, spc));
     }
 
-    private static bool IsSyntaxTargetForGeneration(SyntaxNode node) => node is ClassDeclarationSyntax { AttributeLists.Count: > 0 };
+    private static bool IsSyntaxTargetForGeneration(SyntaxNode node) => node is EnumDeclarationSyntax { AttributeLists.Count: > 0 };
 
-    private static ClassDeclarationSyntax? GetSemanticTargetForGeneration(GeneratorSyntaxContext context)
+    private static EnumDeclarationSyntax? GetSemanticTargetForGeneration(GeneratorSyntaxContext context)
     {
-        ClassDeclarationSyntax classDeclarationSyntax = (ClassDeclarationSyntax)context.Node;
+        EnumDeclarationSyntax enumDeclarationSyntax = (EnumDeclarationSyntax)context.Node;
 
-        foreach (AttributeListSyntax attributeListSyntax in classDeclarationSyntax.AttributeLists)
+        foreach (AttributeListSyntax attributeListSyntax in enumDeclarationSyntax.AttributeLists)
         {
             foreach (AttributeSyntax attributeSyntax in attributeListSyntax.Attributes)
             {
@@ -49,9 +52,9 @@ public class StaticDictionaryGenerator : IIncrementalGenerator
 
                 string fullName = attributeContainingTypeSymbol.ToDisplayString();
 
-                if (fullName == AttributeFullName)
+                if (fullName == StaticDictionaryAttributeFullName)
                 {
-                    return classDeclarationSyntax;
+                    return enumDeclarationSyntax;
                 }
             }
         }
@@ -59,21 +62,22 @@ public class StaticDictionaryGenerator : IIncrementalGenerator
         return null;
     }
 
-    private static void Execute(Compilation compilation, ImmutableArray<ClassDeclarationSyntax> dictionaries, SourceProductionContext context)
+    private static void Execute(Compilation compilation, ImmutableArray<EnumDeclarationSyntax> dictionaries, SourceProductionContext context)
     {
         if (dictionaries.IsDefaultOrEmpty)
         {
             return;
         }
 
-        IEnumerable<ClassDeclarationSyntax> distinctDictionaries = dictionaries.Distinct();
+        IEnumerable<EnumDeclarationSyntax> distinctDictionaries = dictionaries.Distinct();
 
-        List<StaticDictionaryToGenerate> dictionariesToGenerate = GetDictionariesToGenerate(compilation, distinctDictionaries, context.CancellationToken);
+        List<EnumDictionaryToGenerate> dictionariesToGenerate = GetDictionariesToGenerate(compilation, distinctDictionaries, context.CancellationToken);
 
         if (dictionariesToGenerate.Count > 0)
         {
             StringBuilder sb = new StringBuilder();
-            foreach (var dictionaryToGenerate in dictionariesToGenerate)
+
+            foreach (EnumDictionaryToGenerate dictionaryToGenerate in dictionariesToGenerate)
             {
                 sb.Clear();
                 string result = SourceGenerationHelper.GenerateExtensionClass(sb, dictionaryToGenerate);
@@ -82,104 +86,108 @@ public class StaticDictionaryGenerator : IIncrementalGenerator
         }
     }
 
-    private static List<StaticDictionaryToGenerate> GetDictionariesToGenerate(Compilation compilation, IEnumerable<ClassDeclarationSyntax> enums, CancellationToken ct)
+    private static List<EnumDictionaryToGenerate> GetDictionariesToGenerate(Compilation compilation, IEnumerable<EnumDeclarationSyntax> enums, CancellationToken ct)
     {
-        List<StaticDictionaryToGenerate> dictionariesToGenerate = new List<StaticDictionaryToGenerate>();
+        List<EnumDictionaryToGenerate> dictionariesToGenerate = new List<EnumDictionaryToGenerate>();
 
-        INamedTypeSymbol? classAttribute = compilation.GetTypeByMetadataName(AttributeFullName);
+        INamedTypeSymbol? enumAttribute = compilation.GetTypeByMetadataName(StaticDictionaryAttributeFullName);
+        INamedTypeSymbol? enumMemberAttribute = compilation.GetTypeByMetadataName(ValueAttributeFullName);
 
-        if (classAttribute == null)
+        if (enumAttribute == null || enumMemberAttribute == null)
         {
             return dictionariesToGenerate;
         }
 
-        INamedTypeSymbol? displayAttribute = compilation.GetTypeByMetadataName(DisplayAttribute);
-
-        foreach (ClassDeclarationSyntax classDeclarationSyntax in enums)
+        foreach (EnumDeclarationSyntax enumDeclarationSyntax in enums)
         {
             ct.ThrowIfCancellationRequested();
 
-            SemanticModel semanticModel = compilation.GetSemanticModel(classDeclarationSyntax.SyntaxTree);
+            SemanticModel semanticModel = compilation.GetSemanticModel(enumDeclarationSyntax.SyntaxTree);
 
-            if (semanticModel.GetDeclaredSymbol(classDeclarationSyntax) is not INamedTypeSymbol classSymbol)
+            if (semanticModel.GetDeclaredSymbol(enumDeclarationSyntax) is not INamedTypeSymbol enumSymbol)
             {
                 continue;
             }
 
-            string name = classSymbol.Name + "Extensions";
-            string nameSpace = classSymbol.ContainingNamespace.IsGlobalNamespace ? string.Empty : classSymbol.ContainingNamespace.ToString()!;
+            string name = enumSymbol.Name + "Extensions";
+            string nameSpace = enumSymbol.ContainingNamespace.IsGlobalNamespace ? string.Empty : enumSymbol.ContainingNamespace.ToString()!;
+            string fullyQualifiedName = enumSymbol.ToString()!;
 
-            foreach (AttributeData attributeData in classSymbol.GetAttributes())
+            List<string> propertyNames = new List<string>();
+
+            foreach (AttributeData attributeData in enumSymbol.GetAttributes())
             {
-                if (!classAttribute.Equals(attributeData.AttributeClass, SymbolEqualityComparer.Default))
+                if (!enumAttribute.Equals(attributeData.AttributeClass, SymbolEqualityComparer.Default))
                 {
                     continue;
                 }
 
-                foreach (KeyValuePair<string, TypedConstant> namedArgument in attributeData.NamedArguments)
+                foreach (TypedConstant constructorArgument in attributeData.ConstructorArguments)
                 {
-                    if (namedArgument.Key == "ExtensionClassNamespace" && namedArgument.Value.Value?.ToString() is { } ns)
-                    {
-                        nameSpace = ns;
-                        continue;
-                    }
-
-                    if (namedArgument.Key == "ExtensionClassName" && namedArgument.Value.Value?.ToString() is { } n)
-                    {
-                        name = n;
-                    }
+                    propertyNames.AddRange(constructorArgument.Values.Select(x => x.Value.ToString()));
                 }
             }
 
-            string fullyQualifiedName = classSymbol.ToString()!;
+            if (propertyNames.Distinct().Count() != propertyNames.Count)
+            {
+                throw new ArgumentException($"Property names must not be dublicated at {enumSymbol.Name}.");
+            }
 
-            ImmutableArray<ISymbol> classMembers = classSymbol.GetMembers();
+            ImmutableArray<ISymbol> enumMembers = enumSymbol.GetMembers();
 
-            List<StaticDictionary> properties = new List<StaticDictionary>(classMembers.Length);
+            List<EnumMemberDefinition> members = new List<EnumMemberDefinition>(enumMembers.Length);
 
-            HashSet<string> displayNames = new HashSet<string>();
+            List<Type> propertyTypes = new List<Type>();
 
-            bool isDisplayNameTheFirstPresence = false;
+            int i = 0;
 
-            foreach (ISymbol member in classMembers)
+            foreach (ISymbol member in enumMembers)
             {
                 if (member is not IFieldSymbol field || field.ConstantValue is null)
                 {
                     continue;
                 }
 
-                string? displayName = null;
+                List<object?> memberProperties = new List<object?>();
 
-                if (displayAttribute is not null)
+                foreach (AttributeData? memberAttribute in field.GetAttributes())
                 {
-                    foreach (var attribute in member.GetAttributes())
+                    if (!enumMemberAttribute.Equals(memberAttribute.AttributeClass, SymbolEqualityComparer.Default))
                     {
-                        if(!displayAttribute.Equals(attribute.AttributeClass, SymbolEqualityComparer.Default))
-                        {
-                            continue;
-                        }
-
-                        foreach (KeyValuePair<string, TypedConstant> namedArgument in attribute.NamedArguments)
-                        {
-                            if (namedArgument.Key == "Name" && namedArgument.Value.Value?.ToString() is { } dn)
-                            {
-                                displayName = dn;
-                                isDisplayNameTheFirstPresence = displayNames.Add(displayName);
-                                break;
-                            }
-                        }
+                        continue;
                     }
+
+                    TypedConstant firstArgument = memberAttribute.ConstructorArguments.First();
+
+                    if (firstArgument.Values.Count() != propertyNames.Count)
+                    {
+                        throw new ArgumentException($"Enum member {member.Name} has incorrect attribute parameters count at {fullyQualifiedName}.");
+                    }
+
+                    if (i == 0)
+                    {
+                        propertyTypes = firstArgument.Values.Select(x => x.Value?.GetType() ?? typeof(object)).ToList();
+                    }
+
+                    foreach (TypedConstant attributeArgument in firstArgument.Values)
+                    {
+                        memberProperties.Add(attributeArgument.Value);
+                    }
+
+                    i++;
                 }
 
-                properties.Add(null);
+                members.Add(new EnumMemberDefinition((int)field.ConstantValue, member.Name, memberProperties.ToArray()));
             }
 
-            dictionariesToGenerate.Add(new StaticDictionaryToGenerate(
+            dictionariesToGenerate.Add(new EnumDictionaryToGenerate(
                 name: name,
                 nameSpace: nameSpace,
                 fullyQualifiedName: fullyQualifiedName,
-                properties: properties,
-                isPublic: classSymbol.DeclaredAccessibility == Accessibility.Public));
+                propertyNames,
+                propertyTypes.ToArray(),
+                members: members,
+                isPublic: enumSymbol.DeclaredAccessibility == Accessibility.Public));
         }
 
         return dictionariesToGenerate;

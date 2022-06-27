@@ -1,6 +1,5 @@
-﻿using System.Reflection;
-using System.Text;
-using StaticDictionaries;
+﻿using System.Text;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace StaticDictionaries.SourceGeneration;
 
@@ -16,14 +15,13 @@ public static class SourceGenerationHelper
 //------------------------------------------------------------------------------
 #nullable enable";
 
-    public static string GenerateExtensionClass(StringBuilder sb, StaticDictionaryToGenerate dictionaryToGenerate)
+    public static string GenerateExtensionClass(StringBuilder sb, EnumDictionaryToGenerate dictionaryToGenerate)
     {
         sb
             .Append(Header)
             .Append(@"
-#if NETCOREAPP && !NETCOREAPP2_0 && !NETCOREAPP1_1 && !NETCOREAPP1_0
 using System;
-#endif
+
 ");
         if (!string.IsNullOrEmpty(dictionaryToGenerate.Namespace))
         {
@@ -39,38 +37,89 @@ namespace ").Append(dictionaryToGenerate.Namespace).Append(@"
         /// The number of members in the enum.
         /// This is a non-distinct count of defined names.
         /// </summary>
-        public const int Length = ").Append(dictionaryToGenerate.Properties.Count).Append(";");
+        public const int Length = ").Append(dictionaryToGenerate.Members.Count).Append(";");
 
-        sb.Append(@$"public static {dictionaryToGenerate.FullyQualifiedName} GetById(int id)");
-        sb.Append(@" => value switch {");
+        sb.AppendLine();
 
-        foreach (StaticDictionary property in dictionaryToGenerate.Properties)
+        int i = 0;
+        foreach (string propertyName in dictionaryToGenerate.PropertyNames)
         {
-            sb.Append(@"").Append(property.Id);
-            sb.Append(" => ");
-            sb.Append('"').Append(dictionaryToGenerate.FullyQualifiedName).Append(@""",");
+            Type type = dictionaryToGenerate.PropertyTypes[i];
+
+            string wrapper = GetWrapperByType(type);
+
+            sb.AppendLine(@$"public static {type.Name} {propertyName}(this {dictionaryToGenerate.Name} member)");
+            sb.Append("{");
+            sb.AppendLine();
+            sb.Append(@" return member switch {");
+            sb.AppendLine();
+
+            foreach ((string MemberName, object value) property in dictionaryToGenerate.Members.Select(x => (x.MemberName, x.Values[i]!)))
+            {
+                sb.Append($"Employee.{property.MemberName} => {wrapper}{property.value}{wrapper},");
+                sb.AppendLine();
+            }
+
+            sb.Append("default: ");
+            sb.Append($"throw new NotSupportedException(\"{nameof(dictionaryToGenerate.Name)}\"); ");
+            sb.AppendLine();
+            sb.Append("}");
+            sb.AppendLine();
+            sb.AppendLine();
+
+            i++;
         }
 
-        sb.Append(@"
-        public static string[] GetNames()
-        {
-            return new[]
-            {");
-        foreach (StaticDictionary property in dictionaryToGenerate.Properties)
-        {
-            sb.Append(@"nameof(").Append(dictionaryToGenerate.FullyQualifiedName).Append('.').Append(property.Name).Append("),");
-        }
+        sb.AppendLine();
 
-        sb.Append(@"
-            };
-        }
-    }");
-        if (!string.IsNullOrEmpty(dictionaryToGenerate.Namespace))
-        {
-            sb.Append(@"
-}");
-        }
+//         foreach (EnumPropertyDefinition property in dictionaryToGenerate.Properties)
+//         {
+//             sb.Append(@"").Append(property.Id);
+//             sb.Append(" => ");
+//             sb.Append('"').Append(dictionaryToGenerate.FullyQualifiedName).Append(@""",");
+//         }
+//
+//         sb.AppendLine(@$"public static {dictionaryToGenerate.FullyQualifiedName} GetById(int id)");
+//         sb.Append(@" => value switch {");
+//
+//         foreach (EnumPropertyDefinition property in dictionaryToGenerate.Properties)
+//         {
+//             sb.Append(@"").Append(property.Id);
+//             sb.Append(" => ");
+//             sb.Append('"').Append(dictionaryToGenerate.FullyQualifiedName).Append(@""",");
+//         }
+//         sb.Append("}");
+//
+//         sb.Append(@"
+//         public static string[] GetNames()
+//         {
+//             return new[]
+//             {");
+//         foreach (EnumPropertyDefinition property in dictionaryToGenerate.Properties)
+//         {
+//             sb.Append(@"nameof(").Append(dictionaryToGenerate.FullyQualifiedName).Append('.').Append(property.PropertyName).Append("),");
+//         }
+//
+//         sb.Append(@"
+//             };
+//         }
+//     }");
+//         if (!string.IsNullOrEmpty(dictionaryToGenerate.Namespace))
+//         {
+//             sb.Append(@"
+// }");
+//         }
 
         return sb.ToString();
+    }
+
+    private static string GetWrapperByType(Type type)
+    {
+        if (type == typeof(string))
+        {
+            return "\"";
+        }
+
+        return string.Empty;
     }
 }
