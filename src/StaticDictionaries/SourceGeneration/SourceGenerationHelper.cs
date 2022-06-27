@@ -1,5 +1,5 @@
-﻿using System.Text;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
+﻿using System.Diagnostics;
+using System.Text;
 
 namespace StaticDictionaries.SourceGeneration;
 
@@ -17,6 +17,8 @@ public static class SourceGenerationHelper
 
     public static string GenerateExtensionClass(StringBuilder sb, EnumDictionaryToGenerate dictionaryToGenerate)
     {
+        // Debugger.Launch();
+        
         sb
             .Append(Header)
             .Append(@"
@@ -31,7 +33,7 @@ namespace ").Append(dictionaryToGenerate.Namespace).Append(@"
         }
 
         sb.Append(@"
-    ").Append(dictionaryToGenerate.IsPublic ? "public" : "internal").Append(@" static partial class ").Append(dictionaryToGenerate.Name).Append(@"
+    ").Append(dictionaryToGenerate.IsPublic ? "public" : "internal").Append(@" static partial class ").Append($"{dictionaryToGenerate.Name}Extensions").Append(@"
     {
         /// <summary>
         /// The number of members in the enum.
@@ -56,12 +58,16 @@ namespace ").Append(dictionaryToGenerate.Namespace).Append(@"
 
             foreach ((string MemberName, object value) property in dictionaryToGenerate.Members.Select(x => (x.MemberName, x.Values[i]!)))
             {
-                sb.Append($"Employee.{property.MemberName} => {wrapper}{property.value}{wrapper},");
+                string propertyValueString = GetPropertyValueString(property.value, type);
+
+                sb.Append($"{dictionaryToGenerate.Name}.{property.MemberName} => {wrapper}{propertyValueString}{wrapper},");
                 sb.AppendLine();
             }
 
-            sb.Append("default: ");
-            sb.Append($"throw new NotSupportedException(\"{nameof(dictionaryToGenerate.Name)}\"); ");
+            sb.Append("_ => ");
+            sb.Append("throw new NotSupportedException() ");
+            sb.AppendLine();
+            sb.Append("};");
             sb.AppendLine();
             sb.Append("}");
             sb.AppendLine();
@@ -100,15 +106,13 @@ namespace ").Append(dictionaryToGenerate.Namespace).Append(@"
 //             sb.Append(@"nameof(").Append(dictionaryToGenerate.FullyQualifiedName).Append('.').Append(property.PropertyName).Append("),");
 //         }
 //
-//         sb.Append(@"
-//             };
-//         }
-//     }");
-//         if (!string.IsNullOrEmpty(dictionaryToGenerate.Namespace))
-//         {
-//             sb.Append(@"
-// }");
-//         }
+        sb.Append(@"
+    }");
+        if (!string.IsNullOrEmpty(dictionaryToGenerate.Namespace))
+        {
+            sb.Append(@"
+}");
+        }
 
         return sb.ToString();
     }
@@ -121,5 +125,15 @@ namespace ").Append(dictionaryToGenerate.Namespace).Append(@"
         }
 
         return string.Empty;
+    }
+
+    private static string GetPropertyValueString(object value, Type type)
+    {
+        if (type == typeof(bool))
+        {
+            return value.ToString().ToLower();
+        }
+
+        return value.ToString();
     }
 }

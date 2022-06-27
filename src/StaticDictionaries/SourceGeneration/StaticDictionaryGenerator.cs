@@ -19,8 +19,6 @@ public class StaticDictionaryGenerator : IIncrementalGenerator
 
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
-        Debugger.Launch();
-
         IncrementalValuesProvider<EnumDeclarationSyntax> staticDictionaryDeclarations = context.SyntaxProvider
             .CreateSyntaxProvider(
                 predicate: static (s, _) => IsSyntaxTargetForGeneration(s),
@@ -109,9 +107,9 @@ public class StaticDictionaryGenerator : IIncrementalGenerator
                 continue;
             }
 
-            string name = enumSymbol.Name + "Extensions";
+            //string name = enumSymbol.Name + "Extensions";
             string nameSpace = enumSymbol.ContainingNamespace.IsGlobalNamespace ? string.Empty : enumSymbol.ContainingNamespace.ToString()!;
-            string fullyQualifiedName = enumSymbol.ToString()!;
+            //string fullyQualifiedName = enumSymbol.ToString()!;
 
             List<string> propertyNames = new List<string>();
 
@@ -161,7 +159,7 @@ public class StaticDictionaryGenerator : IIncrementalGenerator
 
                     if (firstArgument.Values.Count() != propertyNames.Count)
                     {
-                        throw new ArgumentException($"Enum member {member.Name} has incorrect attribute parameters count at {fullyQualifiedName}.");
+                        throw new ArgumentException($"Enum member {member.Name} has incorrect attribute parameters count at {enumSymbol.Name}.");
                     }
 
                     if (i == 0)
@@ -181,9 +179,9 @@ public class StaticDictionaryGenerator : IIncrementalGenerator
             }
 
             dictionariesToGenerate.Add(new EnumDictionaryToGenerate(
-                name: name,
+                name: enumSymbol.Name,
                 nameSpace: nameSpace,
-                fullyQualifiedName: fullyQualifiedName,
+                fullyQualifiedName: enumSymbol.Name,
                 propertyNames,
                 propertyTypes.ToArray(),
                 members: members,
