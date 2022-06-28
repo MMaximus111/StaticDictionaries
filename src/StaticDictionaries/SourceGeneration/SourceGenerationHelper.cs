@@ -17,8 +17,6 @@ public static class SourceGenerationHelper
 
     public static string GenerateExtensionClass(StringBuilder sb, EnumDictionaryToGenerate dictionaryToGenerate)
     {
-        // Debugger.Launch();
-
         sb
             .Append(Header)
             .Append(@"
@@ -56,9 +54,9 @@ namespace ").Append(dictionaryToGenerate.Namespace).Append(@"
 
             foreach ((string MemberName, object value) property in dictionaryToGenerate.Members.Select(x => (x.MemberName, x.Values[i]!)))
             {
-                string propertyValueString = GetPropertyValueString(property.value, type);
+                // string propertyValueString = GetPropertyValueString(property.value, type);
 
-                sb.Append($"{dictionaryToGenerate.Name}.{property.MemberName} => {propertyValueString},");
+                sb.Append($"{dictionaryToGenerate.Name}.{property.MemberName} => {ToLiteral(property.value)},");
                 sb.AppendLine();
             }
 
@@ -116,23 +114,8 @@ namespace ").Append(dictionaryToGenerate.Namespace).Append(@"
         return sb.ToString();
     }
 
-    private static string GetPropertyValueString(object value, Type type)
+    private static string ToLiteral(object value)
     {
-        if (type == typeof(bool))
-        {
-            return value.ToString().ToLower();
-        }
-
-        if (type == typeof(string))
-        {
-            return ToLiteral(value.ToString());
-        }
-
-        return value.ToString();
-    }
-
-    private static string ToLiteral(string valueTextForCompiler)
-    {
-        return SymbolDisplay.FormatLiteral(valueTextForCompiler, true);
+        return SymbolDisplay.FormatPrimitive(value, true, false);
     }
 }

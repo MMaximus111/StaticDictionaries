@@ -15,6 +15,7 @@ public class MainTests
         bool johnActive = Employee.John.Active();
         string maximName = Employee.Maxim.Name();
         string johnName = Employee.John.Name();
+        char completedSymbol = Status.Completed.Symbol();
 
         johnAge.Should().Be(23);
         maximAge.Should().Be(18);
@@ -22,6 +23,7 @@ public class MainTests
         johnActive.Should().Be(false);
         maximName.Should().Be("Максим");
         johnName.Should().Be("Джон");
+        completedSymbol.Should().Be('"');
     }
 
     [Fact]

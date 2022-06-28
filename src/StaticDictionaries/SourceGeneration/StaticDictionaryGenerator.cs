@@ -1,5 +1,4 @@
 ﻿using System.Collections.Immutable;
-using System.Diagnostics;
 using System.Text;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -88,10 +87,10 @@ public class StaticDictionaryGenerator : IIncrementalGenerator
     {
         List<EnumDictionaryToGenerate> dictionariesToGenerate = new List<EnumDictionaryToGenerate>();
 
-        INamedTypeSymbol? enumAttribute = compilation.GetTypeByMetadataName(StaticDictionaryAttributeFullName);
-        INamedTypeSymbol? enumMemberAttribute = compilation.GetTypeByMetadataName(ValueAttributeFullName);
+        INamedTypeSymbol? staticDictionaryAttribute = compilation.GetTypeByMetadataName(StaticDictionaryAttributeFullName);
+        INamedTypeSymbol? valueAttribute = compilation.GetTypeByMetadataName(ValueAttributeFullName);
 
-        if (enumAttribute == null || enumMemberAttribute == null)
+        if (staticDictionaryAttribute == null || valueAttribute == null)
         {
             return dictionariesToGenerate;
         }
@@ -113,15 +112,16 @@ public class StaticDictionaryGenerator : IIncrementalGenerator
 
             foreach (AttributeData attributeData in enumSymbol.GetAttributes())
             {
-                if (!enumAttribute.Equals(attributeData.AttributeClass, SymbolEqualityComparer.Default))
+                if (!staticDictionaryAttribute.Equals(attributeData.AttributeClass, SymbolEqualityComparer.Default))
                 {
                     continue;
                 }
 
-                foreach (TypedConstant constructorArgument in attributeData.ConstructorArguments)
-                {
-                    propertyNames.AddRange(constructorArgument.Values.Select(x => x.Value.ToString()));
-                }
+                TypedConstant firstArgument = attributeData.ConstructorArguments[0];
+                TypedConstant secondParamsArgument = attributeData.ConstructorArguments[1];
+
+                propertyNames.Add(firstArgument.Value!.ToString());
+                propertyNames.AddRange(secondParamsArgument.Values.Select(x => x.Value!.ToString()));
             }
 
             if (propertyNames.Distinct().Count() != propertyNames.Count)
@@ -131,7 +131,12 @@ public class StaticDictionaryGenerator : IIncrementalGenerator
 
             ImmutableArray<ISymbol> enumMembers = enumSymbol.GetMembers();
 
-            List<EnumMemberDefinition> members = new List<EnumMemberDefinition>(enumMembers.Length);
+            if (!enumMembers.Any())
+            {
+                continue;
+            }
+
+            List<EnumMemberDefinition> membersWithValueAttribute = new List<EnumMemberDefinition>(enumMembers.Length);
 
             List<Type> propertyTypes = new List<Type>();
 
@@ -148,7 +153,7 @@ public class StaticDictionaryGenerator : IIncrementalGenerator
 
                 foreach (AttributeData? memberAttribute in field.GetAttributes())
                 {
-                    if (!enumMemberAttribute.Equals(memberAttribute.AttributeClass, SymbolEqualityComparer.Default))
+                    if (!valueAttribute.Equals(memberAttribute.AttributeClass, SymbolEqualityComparer.Default))
                     {
                         continue;
                     }
@@ -157,7 +162,7 @@ public class StaticDictionaryGenerator : IIncrementalGenerator
 
                     if (firstArgument.Values.Count() != propertyNames.Count)
                     {
-                        throw new ArgumentException($"Enum member {member.Name} has incorrect attribute parameters count at {enumSymbol.Name}.");
+                        throw new ArgumentException($"`StaticDictionary` enum member {member.Name} has incorrect attribute parameters count at {enumSymbol.Name}.\n Expecting: {propertyNames.Count}, actual: {firstArgument.Values.Count()}");
                     }
 
                     if (i == 0)
@@ -173,16 +178,25 @@ public class StaticDictionaryGenerator : IIncrementalGenerator
                     i++;
                 }
 
-                members.Add(new EnumMemberDefinition((int)field.ConstantValue, member.Name, memberProperties.ToArray()));
+                membersWithValueAttribute.Add(new EnumMemberDefinition((int)field.ConstantValue, member.Name, memberProperties.ToArray()));
+            }
+
+            if (!membersWithValueAttribute.Any())
+            {
+                continue;
+            }
+
+            if (membersWithValueAttribute.Count != enumMembers.Count(x => x is IFieldSymbol { ConstantValue: { } }))
+            {
+                throw new ArgumentException($"All `StaticDictionary` enum members must have `Value` attribyte. At {enumSymbol.Name}.");
             }
 
             dictionariesToGenerate.Add(new EnumDictionaryToGenerate(
                 name: enumSymbol.Name,
                 nameSpace: nameSpace,
-                fullyQualifiedName: enumSymbol.Name,
                 propertyNames,
                 propertyTypes.ToArray(),
-                members: members,
+                members: membersWithValueAttribute,
                 isPublic: enumSymbol.DeclaredAccessibility == Accessibility.Public));
         }
 

@@ -5,7 +5,6 @@ public readonly struct EnumDictionaryToGenerate
     public EnumDictionaryToGenerate(
         string name,
         string nameSpace,
-        string fullyQualifiedName,
         IReadOnlyCollection<string> propertyNames,
         Type[] propertyTypes,
         IReadOnlyCollection<EnumMemberDefinition> members,
@@ -15,7 +14,6 @@ public readonly struct EnumDictionaryToGenerate
         Namespace = nameSpace;
         Members = members;
         IsPublic = isPublic;
-        FullyQualifiedName = fullyQualifiedName;
         PropertyNames = propertyNames;
         PropertyTypes = propertyTypes;
     }
@@ -23,8 +21,6 @@ public readonly struct EnumDictionaryToGenerate
     public bool IsPublic { get; }
 
     public string Name { get; }
-
-    public string FullyQualifiedName { get; }
 
     public string Namespace { get; }
 
