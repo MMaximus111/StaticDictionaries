@@ -1,5 +1,5 @@
-﻿using System.Diagnostics;
-using System.Text;
+﻿using System.Text;
+using Microsoft.CodeAnalysis.CSharp;
 
 namespace StaticDictionaries.SourceGeneration;
 
@@ -18,7 +18,7 @@ public static class SourceGenerationHelper
     public static string GenerateExtensionClass(StringBuilder sb, EnumDictionaryToGenerate dictionaryToGenerate)
     {
         // Debugger.Launch();
-        
+
         sb
             .Append(Header)
             .Append(@"
@@ -48,8 +48,6 @@ namespace ").Append(dictionaryToGenerate.Namespace).Append(@"
         {
             Type type = dictionaryToGenerate.PropertyTypes[i];
 
-            string wrapper = GetWrapperByType(type);
-
             sb.AppendLine(@$"public static {type.Name} {propertyName}(this {dictionaryToGenerate.Name} member)");
             sb.Append("{");
             sb.AppendLine();
@@ -60,16 +58,15 @@ namespace ").Append(dictionaryToGenerate.Namespace).Append(@"
             {
                 string propertyValueString = GetPropertyValueString(property.value, type);
 
-                sb.Append($"{dictionaryToGenerate.Name}.{property.MemberName} => {wrapper}{propertyValueString}{wrapper},");
+                sb.Append($"{dictionaryToGenerate.Name}.{property.MemberName} => {propertyValueString},");
                 sb.AppendLine();
             }
 
             sb.Append("_ => ");
             sb.Append("throw new NotSupportedException() ");
             sb.AppendLine();
-            sb.Append("};");
-            sb.AppendLine();
-            sb.Append("}");
+            sb.AppendLine("};");
+            sb.AppendLine("}");
             sb.AppendLine();
             sb.AppendLine();
 
@@ -78,34 +75,36 @@ namespace ").Append(dictionaryToGenerate.Namespace).Append(@"
 
         sb.AppendLine();
 
-//         foreach (EnumPropertyDefinition property in dictionaryToGenerate.Properties)
-//         {
-//             sb.Append(@"").Append(property.Id);
-//             sb.Append(" => ");
-//             sb.Append('"').Append(dictionaryToGenerate.FullyQualifiedName).Append(@""",");
-//         }
-//
-//         sb.AppendLine(@$"public static {dictionaryToGenerate.FullyQualifiedName} GetById(int id)");
-//         sb.Append(@" => value switch {");
-//
-//         foreach (EnumPropertyDefinition property in dictionaryToGenerate.Properties)
-//         {
-//             sb.Append(@"").Append(property.Id);
-//             sb.Append(" => ");
-//             sb.Append('"').Append(dictionaryToGenerate.FullyQualifiedName).Append(@""",");
-//         }
-//         sb.Append("}");
-//
-//         sb.Append(@"
-//         public static string[] GetNames()
-//         {
-//             return new[]
-//             {");
-//         foreach (EnumPropertyDefinition property in dictionaryToGenerate.Properties)
-//         {
-//             sb.Append(@"nameof(").Append(dictionaryToGenerate.FullyQualifiedName).Append('.').Append(property.PropertyName).Append("),");
-//         }
-//
+        sb.AppendLine(@$"public static {dictionaryToGenerate.Name} GetById(int id)");
+        sb.AppendLine("{");
+        sb.Append(@" return id switch {");
+
+        foreach (EnumMemberDefinition? member in dictionaryToGenerate.Members)
+        {
+            sb.Append(@"").Append(member.Id).Append(" => ");
+
+            sb.Append(dictionaryToGenerate.Name).Append(".").Append(member.MemberName).Append(",");
+            sb.AppendLine();
+        }
+        sb.Append("_ => ");
+        sb.Append("throw new NotSupportedException() ");
+        sb.AppendLine("};");
+        sb.AppendLine("}");
+
+        sb.AppendLine($@"public static {dictionaryToGenerate.Name}[] All()");
+        sb.AppendLine("{");
+        sb.AppendLine("return new[]");
+        sb.AppendLine("{");
+
+        foreach (EnumMemberDefinition? member in dictionaryToGenerate.Members)
+        {
+            sb.Append(dictionaryToGenerate.Name).Append('.').Append(member.MemberName).Append(",");
+            sb.AppendLine();
+        }
+
+        sb.AppendLine("};");
+        sb.Append("}");
+
         sb.Append(@"
     }");
         if (!string.IsNullOrEmpty(dictionaryToGenerate.Namespace))
@@ -117,16 +116,6 @@ namespace ").Append(dictionaryToGenerate.Namespace).Append(@"
         return sb.ToString();
     }
 
-    private static string GetWrapperByType(Type type)
-    {
-        if (type == typeof(string))
-        {
-            return "\"";
-        }
-
-        return string.Empty;
-    }
-
     private static string GetPropertyValueString(object value, Type type)
     {
         if (type == typeof(bool))
@@ -134,6 +123,16 @@ namespace ").Append(dictionaryToGenerate.Namespace).Append(@"
             return value.ToString().ToLower();
         }
 
+        if (type == typeof(string))
+        {
+            return ToLiteral(value.ToString());
+        }
+
         return value.ToString();
+    }
+
+    private static string ToLiteral(string valueTextForCompiler)
+    {
+        return SymbolDisplay.FormatLiteral(valueTextForCompiler, true);
     }
 }

@@ -107,9 +107,7 @@ public class StaticDictionaryGenerator : IIncrementalGenerator
                 continue;
             }
 
-            //string name = enumSymbol.Name + "Extensions";
             string nameSpace = enumSymbol.ContainingNamespace.IsGlobalNamespace ? string.Empty : enumSymbol.ContainingNamespace.ToString()!;
-            //string fullyQualifiedName = enumSymbol.ToString()!;
 
             List<string> propertyNames = new List<string>();
 
