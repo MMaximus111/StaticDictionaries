@@ -1,4 +1,4 @@
-﻿using StaticDictionaries.SourceGeneration.Attributes;
+﻿using StaticDictionaries.Attributes;
 
 namespace StaticDictionaries.Tests.StaticDictionaries;
 

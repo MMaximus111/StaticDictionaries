@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Runtime.Serialization;
-using StaticDictionaries.SourceGeneration.Attributes;
+using StaticDictionaries.Attributes;
 
 namespace StaticDictionaries.Tests.StaticDictionaries;
 

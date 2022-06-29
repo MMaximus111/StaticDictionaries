@@ -1,4 +1,4 @@
-﻿namespace StaticDictionaries.SourceGeneration.Attributes;
+﻿namespace StaticDictionaries.Attributes;
 
 public class ValueAttribute : Attribute
 {

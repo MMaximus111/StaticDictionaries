@@ -1,4 +1,4 @@
-﻿namespace StaticDictionaries.SourceGeneration.Attributes;
+﻿namespace StaticDictionaries.Attributes;
 
 [AttributeUsage(AttributeTargets.Enum)]
 public class StaticDictionaryAttribute : Attribute
