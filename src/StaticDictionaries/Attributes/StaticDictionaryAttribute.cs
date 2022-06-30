@@ -3,9 +3,9 @@
 [AttributeUsage(AttributeTargets.Enum)]
 public class StaticDictionaryAttribute : Attribute
 {
-    public StaticDictionaryAttribute(string firstPropertyName, params string[] propertyNames)
+    public StaticDictionaryAttribute(params string[] propertyNames)
     {
-        PropertyNames = propertyNames.Union(new[] { firstPropertyName }).ToArray();
+        PropertyNames = propertyNames;
     }
 
     public string[] PropertyNames { get; }

@@ -6,7 +6,7 @@ public readonly struct EnumDictionaryToGenerate
         string name,
         string nameSpace,
         IReadOnlyCollection<string> propertyNames,
-        Type[] propertyTypes,
+        List<Type> propertyTypes,
         IReadOnlyCollection<EnumMemberDefinition> members,
         bool isPublic)
     {
@@ -28,5 +28,5 @@ public readonly struct EnumDictionaryToGenerate
 
     public IReadOnlyCollection<string> PropertyNames { get; }
 
-    public Type[] PropertyTypes { get; }
+    public List<Type> PropertyTypes { get; }
 }

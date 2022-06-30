@@ -1,4 +1,5 @@
-﻿using BenchmarkDotNet.Attributes;
+﻿using System.Reflection;
+using BenchmarkDotNet.Attributes;
 using StaticDictionaries.Benchmarks.StaticDictionaries;
 
 namespace StaticDictionaries.Benchmarks;
@@ -6,14 +7,38 @@ namespace StaticDictionaries.Benchmarks;
 public class Benchmarks
 {
     [Benchmark]
-    public void AccessPropertyViaMethod()
+    public void AccessIntPropertyViaMethod()
     {
-        int porscheName = Cars.Porsche.MaxSpeed();
+        int speed = Cars.Porsche.MaxSpeed();
+    }
+
+    [Benchmark]
+    public void AccessNamePropertyViaMethod()
+    {
+        string porscheName = Cars.Porsche.Name();
     }
 
     [Benchmark]
     public void ClassicAccessOfMemberId()
     {
         int porscheId = (int)Cars.Porsche;
+    }
+
+    [Benchmark]
+    public void ClassicAccessToMemberName()
+    {
+        string name = nameof(Cars.Porsche);
+    }
+
+    [Benchmark]
+    public void GetAllMemberViaGeneratedExtensionClass()
+    {
+        Cars[] cars = CarsExtensions.All();
+    }
+
+    [Benchmark]
+    public void GetAllMemberViaReflection()
+    {
+        PropertyInfo[] carsProperties = typeof(Cars).GetProperties();
     }
 }

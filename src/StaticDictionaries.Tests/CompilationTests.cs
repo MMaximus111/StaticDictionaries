@@ -1,6 +1,7 @@
 ﻿using System.Collections.Immutable;
 using FluentAssertions;
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
 using StaticDictionaries.SourceGeneration;
 using StaticDictionaries.Tests.Helpers;
 using Xunit;
@@ -21,7 +22,8 @@ public class CompilationTests
     [InlineData("class__Name_99999999999_______N1a2me__21__Enum_", 770, -01, true)]
     public void CanGenerateInStandardCase(string enumName, int age1, int age2, bool active)
     {
-        string input = $@"using StaticDictionaries.Attributes;
+        string input = $@"
+using StaticDictionaries.Attributes;
 
 namespace StaticDictionaries.Tests.StaticDictionaries;
 
@@ -42,23 +44,24 @@ public enum {enumName}
     [Theory]
     [InlineData("User", '_')]
     [InlineData("_    /", '.')]
-    [InlineData("\"\"    ''", '\\')]
-    [InlineData("\"\"    <   > ;''  ;", ';')]
+    [InlineData("\"\"    ''", 't')]
+    [InlineData("\"\"   .,..,c.gf '''''' \"\"\"\"   \n \\ <   > ;''  ;", '\\')]
     [InlineData("    <   > ;''  ;", '@')]
     [InlineData("    <   > ;''  ;жжвв  й я^ %)(*&^%$#@!", ' ')]
-    [InlineData("    <   > ;\n\n\r\' ////  \\  ;жжвв  й я^ %)(*&^%$#@!", '&')]
+    [InlineData("    <   > ;\n\n\r\' ////  \\  ;жжвв  й я^ %)(*&^%$#@!", '\n')]
     public void SpecialEscapingSymbols(string password, char symbol)
     {
-        string input = $@"using StaticDictionaries.Attributes;
+        string input = $@"
+using StaticDictionaries.Attributes;
 
 namespace StaticDictionaries.Tests.StaticDictionaries;
 
 [StaticDictionary(""Password"", ""Symbol"")]
 public enum MyEnum
 {{
-    [Value(""{password}"", {symbol})]
+    [Value({SymbolDisplay.FormatPrimitive(password, true, false)}, {SymbolDisplay.FormatPrimitive(symbol, true, false)})]
     Leo = 1,
-    [Value(""{password}"", {symbol})]
+    [Value({SymbolDisplay.FormatPrimitive(password, true, false)}, {SymbolDisplay.FormatPrimitive(symbol, true, false)})]
     Santos = 2
 }}";
         (ImmutableArray<Diagnostic> diagnostics, string output) = CompilationTestHelper.GetGeneratedOutput<StaticDictionaryGenerator>(input);
@@ -70,8 +73,7 @@ public enum MyEnum
     [Fact]
     public void IgnoreSimpleEnumWithoutAttributes()
     {
-        string input = $@"
-
+        const string input = $@"
 namespace StaticDictionaries.Tests.StaticDictionaries;
 
 public enum MyEnum
@@ -88,9 +90,10 @@ public enum MyEnum
     [Fact]
     public void AtttributeParametersQuantityNotEqualsMemberParametersQuantity_MustThrowException()
     {
-        string input = $@"using StaticDictionaries.Attributes;
+        const string input = $@"
+using StaticDictionaries.Attributes;
 
-        namespace StaticDictionaries.Tests.StaticDictionaries;
+namespace StaticDictionaries.Tests.StaticDictionaries;
 
 [StaticDictionary(""Name"", ""Active"")]
 public enum IncorrectEnum
@@ -105,5 +108,73 @@ public enum IncorrectEnum
 
         output.Should().BeNullOrEmpty();
         diagnostics.First().GetMessage().Should().Contain("Exception was of type 'ArgumentException' with message '`StaticDictionary`");
+    }
+
+    [Theory]
+    [InlineData("___")]
+    [InlineData("';;'xxs")]
+    [InlineData("Метод")]
+    [InlineData("")]
+    [InlineData("   ")]
+    [InlineData("Name ")]
+    [InlineData(" Name")]
+    [InlineData(" NameName2")]
+    [InlineData(" ")]
+    public void IncrorrectStaticDictionaryAttributeArgumentsName_MustThrowException(string incorrectArgument)
+    {
+        string input = $@"
+using StaticDictionaries.Attributes;
+
+namespace StaticDictionaries.Tests.StaticDictionaries;
+
+[StaticDictionary(""Name"", ""{incorrectArgument}"")]
+public enum IncorrectEnum
+{{
+        [Value(""Leonel"", ""false"")]
+        Leo = 1,
+        [Value(""Santonel"", ""true"")]
+        Santos = 2
+}}";
+
+        (ImmutableArray<Diagnostic> diagnostics, string output) = CompilationTestHelper.GetGeneratedOutput<StaticDictionaryGenerator>(input);
+
+        output.Should().BeNullOrEmpty();
+        diagnostics.First().GetMessage().Should().Contain("has incorrect name for generation at IncorrectEnum.");
+    }
+
+    [Fact]
+    public void UniqueNameEnumsInDifferentNameSpaces()
+    {
+        const string input = $@"
+using StaticDictionaries.Attributes;
+
+namespace StaticDictionaries.Tests.StaticDictionaries1
+{{
+        [StaticDictionary(""Name"", ""Active"")]
+        public enum Enumer
+        {{
+            [Value(""Leonel"", ""false"")]
+            Leo = 1,
+            [Value(""Santonel"", ""true"")]
+            Santos = 2
+        }}
+}}
+
+namespace StaticDictionaries.Tests.StaticDictionaries2
+{{
+        [StaticDictionary(""Name"", ""Active"")]
+        public enum Enumer
+        {{
+            [Value(""Leonel"", ""false"")]
+            Leo = 1,
+            [Value(""Santonel"", ""true"")]
+            Santos = 2
+        }}
+}}";
+
+        (ImmutableArray<Diagnostic> diagnostics, string output) = CompilationTestHelper.GetGeneratedOutput<StaticDictionaryGenerator>(input);
+
+        output.Should().Contain("Enumer");
+        diagnostics.Should().BeNullOrEmpty();
     }
 }

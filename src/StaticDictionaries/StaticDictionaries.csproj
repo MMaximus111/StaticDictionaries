@@ -1,12 +1,16 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>netstandard2.0</TargetFramework>
+        <PackageId>StaticDictionaries</PackageId>
+        <TargetFrameworks>netstandard2.0;net6.0</TargetFrameworks>
         <LangVersion>10</LangVersion>
         <ImplicitUsings>enable</ImplicitUsings>
+        <PackageReleaseNotes>First release with main features.</PackageReleaseNotes>
         <Nullable>enable</Nullable>
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
         <PackageReadmeFile>README.md</PackageReadmeFile>
         <IncludeBuildOutput>false</IncludeBuildOutput>
+        <PackageTags>Dictionary;Source generator;</PackageTags>
     </PropertyGroup>
 
     <ItemGroup>

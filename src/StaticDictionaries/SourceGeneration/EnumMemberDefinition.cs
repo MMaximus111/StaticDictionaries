@@ -2,7 +2,7 @@
 
 public sealed class EnumMemberDefinition
 {
-    public EnumMemberDefinition(int id, string memberName, object?[] values)
+    public EnumMemberDefinition(int id, string memberName, List<object?> values)
     {
         Id = id;
         MemberName = memberName;
@@ -13,5 +13,5 @@ public sealed class EnumMemberDefinition
 
     public string MemberName { get; }
 
-    public object?[] Values { get; }
+    public List<object?> Values { get; }
 }

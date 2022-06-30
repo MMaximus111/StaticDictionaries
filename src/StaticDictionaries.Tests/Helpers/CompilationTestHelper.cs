@@ -18,11 +18,10 @@ internal class CompilationTestHelper
             .Concat(new[]
             {
                 MetadataReference.CreateFromFile(typeof(T).Assembly.Location),
-                MetadataReference.CreateFromFile(typeof(StaticDictionaryAttribute).Assembly.Location),
-                MetadataReference.CreateFromFile(typeof(System.ComponentModel.DataAnnotations.DisplayAttribute).Assembly.Location),
+                MetadataReference.CreateFromFile(typeof(StaticDictionaryAttribute).Assembly.Location)
             });
 
-        var compilation = CSharpCompilation.Create(
+        CSharpCompilation compilation = CSharpCompilation.Create(
             "generator",
             new[] { syntaxTree },
             references,
@@ -32,10 +31,11 @@ internal class CompilationTestHelper
         T generator = new T();
 
         CSharpGeneratorDriver driver = CSharpGeneratorDriver.Create(generator);
+
         driver.RunGeneratorsAndUpdateCompilation(compilation, out Compilation outputCompilation, out ImmutableArray<Diagnostic> diagnostics);
 
         List<SyntaxTree> trees = outputCompilation.SyntaxTrees.ToList();
 
-        return (diagnostics, trees.Count != originalTreeCount ? trees[^1].ToString() : string.Empty);
+        return (diagnostics, trees.Count != originalTreeCount ? trees[trees.Count - 1].ToString() : string.Empty);
     }
 }

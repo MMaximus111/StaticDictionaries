@@ -43,11 +43,9 @@ internal static class EnumProcessor
                     continue;
                 }
 
-                TypedConstant firstArgument = attributeData.ConstructorArguments[0];
-                TypedConstant secondParamsArgument = attributeData.ConstructorArguments[1];
+                TypedConstant argumentsArray = attributeData.ConstructorArguments[0];
 
-                propertyNames.Add(firstArgument.Value!.ToString());
-                propertyNames.AddRange(secondParamsArgument.Values.Select(x => x.Value!.ToString()));
+                propertyNames.AddRange(argumentsArray.Values.Select(x => x.Value!.ToString()));
             }
 
             if (propertyNames.Distinct().Count() != propertyNames.Count)
@@ -74,7 +72,7 @@ internal static class EnumProcessor
 
             List<Type> propertyTypes = new List<Type>();
 
-            int i = 0;
+            bool firstMember = true;
 
             foreach (ISymbol member in enumMembers)
             {
@@ -96,23 +94,30 @@ internal static class EnumProcessor
 
                     if (firstArgument.Values.Count() != propertyNames.Count)
                     {
-                        throw new ArgumentException($"`StaticDictionary` enum member {member.Name} has incorrect attribute parameters count at {enumSymbol.Name}.\n Expecting: {propertyNames.Count}, actual: {firstArgument.Values.Count()}");
+                        throw new ArgumentException($"`StaticDictionary` enum member {member.Name} has incorrect attribute arguments count at {enumSymbol.Name}.\n Expecting: {propertyNames.Count}, actual: {firstArgument.Values.Count()}");
                     }
 
-                    if (i == 0)
+                    if (firstMember)
                     {
                         propertyTypes = firstArgument.Values.Select(x => x.Value?.GetType() ?? typeof(object)).ToList();
+
+                        firstMember = false;
                     }
 
+                    int argumentPosition = 0;
                     foreach (TypedConstant attributeArgument in firstArgument.Values)
                     {
-                        memberProperties.Add(attributeArgument.Value);
-                    }
+                        if ((attributeArgument.Value?.GetType() ?? typeof(object)) != propertyTypes[argumentPosition])
+                        {
+                            throw new ArgumentException($"`StaticDictionary` enum member {member.Name} has incorrect attribute parameter type. Enum: {enumSymbol.Name}. EnumMember: {member.Name}. Parameter: {attributeArgument.Value}");
+                        }
 
-                    i++;
+                        memberProperties.Add(attributeArgument.Value);
+                        argumentPosition++;
+                    }
                 }
 
-                membersWithValueAttribute.Add(new EnumMemberDefinition((int)field.ConstantValue, member.Name, memberProperties.ToArray()));
+                membersWithValueAttribute.Add(new EnumMemberDefinition((int)field.ConstantValue, member.Name, memberProperties.ToList()));
             }
 
             if (!membersWithValueAttribute.Any())
@@ -129,7 +134,7 @@ internal static class EnumProcessor
                 name: enumSymbol.Name,
                 nameSpace: nameSpace,
                 propertyNames,
-                propertyTypes.ToArray(),
+                propertyTypes.ToList(),
                 members: membersWithValueAttribute,
                 isPublic: enumSymbol.DeclaredAccessibility == Accessibility.Public));
         }

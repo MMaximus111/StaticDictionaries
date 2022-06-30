@@ -48,5 +48,34 @@ public class MainTests
 
         Employee johnEmployee = EmployeeExtensions.GetById(2);
         johnEmployee.Should().Be(Employee.John);
+
+        Status status = StatusExtensions.GetById(4);
+        status.Name().Should().Be("Ready1");
+    }
+
+    [Fact]
+    public void AccessGeneratedIdAndNameProperties()
+    {
+        int id = EnumWithoutSettedIdAndName.Value1.Id();
+        string name = EnumWithoutSettedIdAndName.Value2.Name();
+
+        id.Should().Be(1);
+        name.Should().Be(nameof(EnumWithoutSettedIdAndName.Value2));
+    }
+
+    [Fact]
+    public void StaticDictionaryWithoutArgumentsMustGenerateNameAndIdProperties()
+    {
+        string member1Name = StaticDictionaryWithoutArguments.Member1.Name();
+        int member2Id = StaticDictionaryWithoutArguments.Member2.Id();
+
+        member1Name.Should().Be(nameof(StaticDictionaryWithoutArguments.Member1));
+        member2Id.Should().Be((int)StaticDictionaryWithoutArguments.Member2);
+    }
+
+    [Fact]
+    public void NamePropertyMustOverrideDefaultNameOfMember()
+    {
+        Employee.Maxim.Name().Should().NotBeEquivalentTo(nameof(Employee.Maxim));
     }
 }

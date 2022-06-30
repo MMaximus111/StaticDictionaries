@@ -71,7 +71,7 @@ public class StaticDictionaryGenerator : IIncrementalGenerator
             {
                 sb.Clear();
                 string result = SourceGenerationHelper.GenerateExtensionClass(sb, dictionaryToGenerate);
-                context.AddSource(dictionaryToGenerate.Name + "_DictionariesExtensions.g.cs", SourceText.From(result, Encoding.UTF8));
+                context.AddSource($"{dictionaryToGenerate.Namespace.Replace(".", "_")}_{dictionaryToGenerate.Name}" + "_DictionariesExtensions.g.cs", SourceText.From(result, Encoding.UTF8));
             }
         }
     }
