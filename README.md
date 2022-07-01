@@ -28,7 +28,6 @@ Source generator creates some methods in [EnumName]Extensions class for convenie
 * `MaxId` returns max `Id()`.
 * `All()` returns an array of all `enum` members.
 * `GetById()` returns member or `NotSupportedException`.
-* `ToJson()` returns serialized `enum`.
 
 ## Dictionary supported primitive types 🗿
 
@@ -38,7 +37,6 @@ Source generator creates some methods in [EnumName]Extensions class for convenie
 | `bool`   |✅|
 | `char`   |✅|
 | `double`   |✅|
-| `decimal`   |✅|
 | `string`   |✅|
 
 ## Samples 🤝
@@ -93,7 +91,9 @@ public static void Main()
 [StaticDictionary]
 public enum Metal
 {
+    [Value]
     Gold = 1,
+    [Value]
     Ferrum = 2
 }
 
