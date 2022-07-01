@@ -24,7 +24,7 @@ Install-Package StaticDictionaries
 Source generator creates some methods in [EnumName]Extensions class for convenient and fast `enum` management:
 
 * `Length` quantity of all enum members.
-* `MinId` returns mix `Id()`.
+* `MinId` returns min `Id()`.
 * `MaxId` returns max `Id()`.
 * `All()` returns an array of all `enum` members.
 * `GetById()` returns member or `NotSupportedException`.
