@@ -1,8 +1,11 @@
 # StaticDictionaries 📚
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![CodeFactor](https://www.codefactor.io/repository/github/mmaximus111/staticdictionaries/badge)](https://www.codefactor.io/repository/github/mmaximus111/staticdictionaries)
+
 Simple high performance solution for data hardcoding.
 Smart. Flexible. Powerful.
 
-Powered by source generators. Without using reflection ❌
+Powered by source generators. Without using reflection.
 
 StaticDictionaries is a convinient library for data hardcoding in your project.
 Just decorate the `enum` using attributes, the source generator will do the rest for you.
