@@ -83,12 +83,16 @@ internal static class EnumProcessor
 
                 List<object?> memberProperties = new List<object?>();
 
+                bool containsValueAttribute = false;
+
                 foreach (AttributeData? memberAttribute in field.GetAttributes())
                 {
                     if (!valueAttribute.Equals(memberAttribute.AttributeClass, SymbolEqualityComparer.Default))
                     {
                         continue;
                     }
+
+                    containsValueAttribute = true;
 
                     TypedConstant firstArgument = memberAttribute.ConstructorArguments.First();
 
@@ -117,7 +121,10 @@ internal static class EnumProcessor
                     }
                 }
 
-                membersWithValueAttribute.Add(new EnumMemberDefinition((int)field.ConstantValue, member.Name, memberProperties.ToList()));
+                if (containsValueAttribute)
+                {
+                    membersWithValueAttribute.Add(new EnumMemberDefinition((int)field.ConstantValue, member.Name, memberProperties.ToList()));
+                }
             }
 
             if (!membersWithValueAttribute.Any())

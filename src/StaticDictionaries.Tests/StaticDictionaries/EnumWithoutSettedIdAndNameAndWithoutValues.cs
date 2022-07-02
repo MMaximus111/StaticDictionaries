@@ -1,6 +1,10 @@
-﻿namespace StaticDictionaries.Tests.StaticDictionaries;
+﻿using StaticDictionaries.Attributes;
 
-public class EnumWithoutSettedIdAndNameAndWithoutValues
+namespace StaticDictionaries.Tests.StaticDictionaries;
+
+[StaticDictionary]
+public enum EnumWithoutSettedIdAndNameAndWithoutValues
 {
-    
+    Value1 = 1,
+    Value2 = 2
 }

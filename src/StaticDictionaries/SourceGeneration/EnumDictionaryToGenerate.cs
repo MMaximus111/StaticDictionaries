@@ -1,6 +1,6 @@
 ﻿namespace StaticDictionaries.SourceGeneration;
 
-public readonly struct EnumDictionaryToGenerate
+internal readonly struct EnumDictionaryToGenerate
 {
     public EnumDictionaryToGenerate(
         string name,

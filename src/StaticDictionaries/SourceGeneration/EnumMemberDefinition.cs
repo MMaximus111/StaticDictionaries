@@ -1,6 +1,6 @@
 ﻿namespace StaticDictionaries.SourceGeneration;
 
-public sealed class EnumMemberDefinition
+internal sealed class EnumMemberDefinition
 {
     public EnumMemberDefinition(int id, string memberName, List<object?> values)
     {

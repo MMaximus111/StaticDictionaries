@@ -78,4 +78,14 @@ public class MainTests
     {
         Employee.Maxim.Name().Should().NotBeEquivalentTo(nameof(Employee.Maxim));
     }
+
+    [Fact]
+    public void MaxIdMustReturnMaxEnumMemberId()
+    {
+        const int maxId = EmployeeExtensions.MaxId;
+        maxId.Should().Be(2);
+
+        const int minId = EmployeeExtensions.MinId;
+        minId.Should().Be(1);
+    }
 }

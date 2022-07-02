@@ -2,18 +2,32 @@
 
     <PropertyGroup>
         <PackageId>StaticDictionaries</PackageId>
-        <TargetFrameworks>netstandard2.0;net6.0</TargetFrameworks>
+        <Title>StaticDictionaries</Title>
+        <TargetFramework>netstandard2.0</TargetFramework>
         <LangVersion>10</LangVersion>
+        <Authors>Maxim Usatenko</Authors>
+        <VersionPrefix>1.0.0</VersionPrefix>
+        <VersionSuffix>beta</VersionSuffix>
+        <PackageIcon>dictionary.png</PackageIcon>
         <ImplicitUsings>enable</ImplicitUsings>
-        <PackageReleaseNotes>First release with main features.</PackageReleaseNotes>
-        <Nullable>enable</Nullable>
+        <PackageLicenseFile>LICENSE</PackageLicenseFile>
+        <Description>Simple high performance solution for data hardcoding. Smart. Flexible. Powerful.</Description>
+        <PackageReleaseNotes>First release with main functionality.</PackageReleaseNotes>
+        <Nullable>enable</Nullable>  
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
         <PackageReadmeFile>README.md</PackageReadmeFile>
         <IncludeBuildOutput>false</IncludeBuildOutput>
         <PackageTags>Dictionary;Source generator;</PackageTags>
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+        <RepositoryType>git</RepositoryType>
+        <RepositoryUrl>https://github.com/MMaximus111/StaticDictionaries</RepositoryUrl>
+        <PackageProjectUrl>https://github.com/MMaximus111/StaticDictionaries</PackageProjectUrl>
     </PropertyGroup>
 
     <ItemGroup>
+        <None Include="..\..\LICENSE" Pack="true" PackagePath=""/>
+        <None Include="..\..\images\dictionary.png" Pack="true" PackagePath=""/>
+        <None Include="..\..\README.md" Pack="true" PackagePath=""/>
         <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.2.0" />
         <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="3.3.3">
             <PrivateAssets>all</PrivateAssets>

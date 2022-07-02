@@ -3,7 +3,7 @@ using Microsoft.CodeAnalysis.CSharp;
 
 namespace StaticDictionaries.SourceGeneration;
 
-public static class SourceGenerationHelper
+internal static class SourceGenerationHelper
 {
     private const string IdPropertyName = "Id";
     private const string NamePropertyName = "Name";
@@ -73,6 +73,18 @@ namespace ").Append(dictionaryToGenerate.Namespace).Append(@"
             }
         }
 
+        sb.Append(@"/// <summary>
+    /// Max id of enum.
+    /// Returns identifier of member that cannot be overridden by attribute arguments.
+    /// </summary>
+    public const int MaxId = ").Append(dictionaryToGenerate.Members.Max(x => x.Id)).Append(";");
+
+        sb.Append(@"/// <summary>
+    /// Min id of enum.
+    /// Returns identifier of member that cannot be overridden by attribute arguments.
+    /// </summary>
+    public const int MinId = ").Append(dictionaryToGenerate.Members.Min(x => x.Id)).Append(";");
+
         int i = 0;
         foreach (string propertyName in propertyNames)
         {
@@ -90,8 +102,6 @@ namespace ").Append(dictionaryToGenerate.Namespace).Append(@"
                 sb.AppendLine();
             }
 
-            sb.Append("_ => ");
-            sb.Append("throw new NotSupportedException() ");
             sb.AppendLine();
             sb.AppendLine("};");
             sb.AppendLine("}");

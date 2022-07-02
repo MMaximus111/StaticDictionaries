@@ -177,4 +177,110 @@ namespace StaticDictionaries.Tests.StaticDictionaries2
         output.Should().Contain("Enumer");
         diagnostics.Should().BeNullOrEmpty();
     }
+
+    [Theory]
+    [InlineData("string value")]
+    [InlineData("4090@#*&^768<>/...,<>./...,<?:;\\\";l;")]
+    [InlineData("               ")]
+    [InlineData("")]
+    [InlineData(777)]
+    [InlineData(123.68)]
+    [InlineData(5656.8)]
+    [InlineData(-676.111122)]
+    [InlineData(99999999.8)]
+    [InlineData(true)]
+    [InlineData(false)]
+    [InlineData('.')]
+    [InlineData('\\')]
+    [InlineData('!')]
+    [InlineData(' ')]
+    public void CheckAllSupportedPrimitiveTypes(object typeValue)
+    {
+        string input = $@"
+using StaticDictionaries.Attributes;
+
+namespace StaticDictionaries.Tests.StaticDictionaries
+{{
+        [StaticDictionary(""Property"")]
+        public enum Mobile
+        {{
+            [Value({SymbolDisplay.FormatPrimitive(typeValue, true, false)})]
+            Volvo = 1
+        }}
+}}";
+
+        (ImmutableArray<Diagnostic> diagnostics, string output) = CompilationTestHelper.GetGeneratedOutput<StaticDictionaryGenerator>(input);
+
+        output.Should().Contain("Mobile");
+        diagnostics.Should().BeNullOrEmpty();
+    }
+
+    [Fact]
+    public void PropertyNamesMustNotBeDuplicated()
+    {
+        string input = $@"
+using StaticDictionaries.Attributes;
+
+namespace StaticDictionaries.Tests.StaticDictionaries
+{{
+        [StaticDictionary(""Property"", ""Property"")]
+        public enum Mobile
+        {{
+            [Value(true, false)]
+            Apple = 1
+        }}
+}}";
+
+        (ImmutableArray<Diagnostic> diagnostics, string output) = CompilationTestHelper.GetGeneratedOutput<StaticDictionaryGenerator>(input);
+
+        output.Should().BeNullOrEmpty();
+        diagnostics.First().GetMessage().Should().Contain("Property names must not be dublicated");
+    }
+
+    [Fact]
+    public void DifferentParameterTypes_MustThrowException()
+    {
+        string input = $@"
+using StaticDictionaries.Attributes;
+
+namespace StaticDictionaries.Tests.StaticDictionaries
+{{
+        [StaticDictionary(""Property"")]
+        public enum Mobile
+        {{
+            [Value(true)]
+            Apple = 1,
+            [Value('c')]
+            Windows = 2
+        }}
+}}";
+
+        (ImmutableArray<Diagnostic> diagnostics, string output) = CompilationTestHelper.GetGeneratedOutput<StaticDictionaryGenerator>(input);
+
+        output.Should().BeNullOrEmpty();
+        diagnostics.First().GetMessage().Should().Contain("has incorrect attribute parameter type. Enum:");
+    }
+
+    [Fact]
+    public void AllEnumMembersMustHaveValueAttribute()
+    {
+        string input = $@"
+using StaticDictionaries.Attributes;
+
+namespace StaticDictionaries.Tests.StaticDictionaries
+{{
+        [StaticDictionary(""Property"")]
+        public enum Mobile
+        {{
+            [Value(true)]
+            Apple = 1,
+            Windows = 2
+        }}
+}}";
+
+        (ImmutableArray<Diagnostic> diagnostics, string output) = CompilationTestHelper.GetGeneratedOutput<StaticDictionaryGenerator>(input);
+
+        output.Should().BeNullOrEmpty();
+        diagnostics.First().GetMessage().Should().Contain("All `StaticDictionary` enum members must have `Value` attribyte.");
+    }
 }
