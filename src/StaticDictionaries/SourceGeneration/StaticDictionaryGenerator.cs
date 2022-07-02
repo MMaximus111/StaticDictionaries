@@ -6,9 +6,16 @@ using Microsoft.CodeAnalysis.Text;
 
 namespace StaticDictionaries.SourceGeneration;
 
+/// <summary>
+/// Source generator for StaticDictionary enums.
+/// </summary>
 [Generator]
 public class StaticDictionaryGenerator : IIncrementalGenerator
 {
+    /// <summary>
+    /// Internal source generator initialization method.
+    /// </summary>
+    /// <param name="context">Source generator context.</param>
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
         IncrementalValuesProvider<EnumDeclarationSyntax> staticDictionaryDeclarations = context.SyntaxProvider

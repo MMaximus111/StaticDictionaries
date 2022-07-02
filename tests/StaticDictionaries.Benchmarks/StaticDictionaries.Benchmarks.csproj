@@ -9,7 +9,8 @@
 
     <ItemGroup>
         <PackageReference Include="BenchmarkDotNet" Version="0.13.1" />
-        <ProjectReference Include="..\StaticDictionaries\StaticDictionaries.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="true" />
+        <ProjectReference Include="..\..\src\StaticDictionaries.Attributes\StaticDictionaries.Attributes.csproj" />
+        <ProjectReference Include="..\..\src\StaticDictionaries\StaticDictionaries.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="true" />
     </ItemGroup>
 
 </Project>
