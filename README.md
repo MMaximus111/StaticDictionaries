@@ -1,6 +1,7 @@
 # StaticDictionaries 📚
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![CodeFactor](https://www.codefactor.io/repository/github/mmaximus111/staticdictionaries/badge)](https://www.codefactor.io/repository/github/mmaximus111/staticdictionaries)
+[![NuGet version (SoftCircuits.Silk)](https://img.shields.io/nuget/v/StaticDictionaries?color=blue&style=plastic?logoHeight=45)](https://www.nuget.org/packages/StaticDictionaries)
 
 Simple high performance solution for data hardcoding.
 Smart. Flexible. Powerful.
