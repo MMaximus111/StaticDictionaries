@@ -24,6 +24,23 @@ dotnet add package StaticDictionaries
 
 Install-Package StaticDictionaries
 ```
+## Basic usage by steps🛸
+1. Decorate your enum with `[StaticDictionary]` attribute and define arguments to generate properties:
+```csharp
+[StaticDictionary("Surname", "Age")]
+public enum User
+```
+
+2. Decorate your enum members with `[Value]` attribute and define member values:
+```csharp
+[Value("Brown", 27)]
+John = 1
+```
+
+3. Build project to run source generator and get access to generated methods:
+```csharp
+int age = User.John.Age();
+```
 
 ## Powerful `enum` management 🦾
 
@@ -113,14 +130,12 @@ public static void Main()
 
 ## Important notes ⚠️
 
-* `StaticDictionary` parameter names must not be duplicated.
-* `StaticDictionary` parameter names must use the English alphabet only because they will be generated into methods.
-* All `Value` attrubutes must contain such arguments quantity as `StaticDictionary`.
-* All `StaticDictionary` `enum` members must contain `Value` attribute with arguments. 
+* `[StaticDictionary]` parameter names must not be duplicated.
+* `[StaticDictionary]` parameter names must use the English alphabet only because they will be generated into methods.
+* All `[Value]` attrubutes must contain such arguments quantity as `[StaticDictionary]`.
+* All `[StaticDictionary]` `enum` members must contain `[Value]` attribute with arguments. 
 * Generator creates two methods by default: `Id()` with `(int)member` and `Name()` with `nameof(member)` if you do not override them.
-* `enum` members without `Value` attribute will be ignored.
+* `enum` members without `[Value]` attribute will be ignored.
 * Parameter types are determined automatically, so all parameters in a sequence must be of the same type.
 For example, all of the first types should be `string`, and all of the second types should be `bool`.
 
-## Disclaimer ❗️
-The material embodied in this software is provided to you "as-is" and without warranty of any kind, express, implied or otherwise, including without limitation, any warranty of fitness for a particular purpose. In no event shall the Centers for Disease Control and Prevention (CDC) or the United States (U.S.) government be liable to you or anyone else for any direct, special, incidental, indirect or consequential damages of any kind, or any damages whatsoever, including without limitation, loss of profit, loss of use, savings or revenue, or the claims of third parties, whether or not CDC or the U.S. government has been advised of the possibility of such loss, however caused and on any theory of liability, arising out of or in connection with the possession, use or performance of this software.
