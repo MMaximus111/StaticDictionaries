@@ -17,7 +17,7 @@
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
         <PackageReadmeFile>README.md</PackageReadmeFile>
         <IncludeBuildOutput>false</IncludeBuildOutput>
-        <PackageTags>Dictionary;Source generator;</PackageTags>
+        <PackageTags>source-generator</PackageTags>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <RepositoryType>git</RepositoryType>
         <RepositoryUrl>https://github.com/MMaximus111/StaticDictionaries</RepositoryUrl>
