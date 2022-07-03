@@ -6,7 +6,6 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
-        <RootNamespace>StaticDictionaries</RootNamespace>
         <IsPackable>false</IsPackable>
     </PropertyGroup>
 
