@@ -209,9 +209,11 @@ namespace StaticDictionaries.Tests.StaticDictionaries2
     {
         string input = $@"
 using StaticDictionaries.Attributes;
+using System.Xml.Serialization;
 
 namespace StaticDictionaries.Tests.StaticDictionaries
 {{
+        [XmlRoot(""root"")]
         [StaticDictionary(""Property"")]
         public enum Mobile
         {{
@@ -401,6 +403,7 @@ namespace StaticDictionaries.Tests.StaticDictionaries
         (ImmutableArray<Diagnostic> diagnostics, string output) = CompilationTestHelper.GetGeneratedOutput<StaticDictionaryGenerator>(input);
 
         output.Should().Contain("Qwerty");
+        output.Should().Contain((membersQuantity - 1).ToString());
         diagnostics.Should().BeNullOrEmpty();
     }
 }

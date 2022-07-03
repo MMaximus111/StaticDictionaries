@@ -45,10 +45,7 @@ internal static class EnumProcessor
     {
         SemanticModel semanticModel = compilation.GetSemanticModel(enumDeclarationSyntax.SyntaxTree);
 
-        if (semanticModel.GetDeclaredSymbol(enumDeclarationSyntax) is not INamedTypeSymbol enumSymbol)
-        {
-            return null;
-        }
+        INamedTypeSymbol enumSymbol = (semanticModel.GetDeclaredSymbol(enumDeclarationSyntax) as INamedTypeSymbol)!;
 
         string nameSpace = enumSymbol.ContainingNamespace.IsGlobalNamespace ? string.Empty : enumSymbol.ContainingNamespace.ToString()!;
 
@@ -73,11 +70,6 @@ internal static class EnumProcessor
         }
 
         ImmutableArray<ISymbol> enumMembers = enumSymbol.GetMembers();
-
-        if (!enumMembers.Any())
-        {
-            return null;
-        }
 
         List<EnumMemberDefinition> membersWithValueAttribute = new List<EnumMemberDefinition>(enumMembers.Length);
 
@@ -136,11 +128,6 @@ internal static class EnumProcessor
             {
                 membersWithValueAttribute.Add(new EnumMemberDefinition((int)field.ConstantValue, member.Name, memberProperties.ToList()));
             }
-        }
-
-        if (!membersWithValueAttribute.Any())
-        {
-            return null;
         }
 
         if (membersWithValueAttribute.Count != enumMembers.Count(x => x is IFieldSymbol { ConstantValue: { } }))
