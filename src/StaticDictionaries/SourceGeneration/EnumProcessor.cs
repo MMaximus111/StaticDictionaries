@@ -130,6 +130,11 @@ internal static class EnumProcessor
             }
         }
 
+        if (!membersWithValueAttribute.Any())
+        {
+            return null;
+        }
+
         if (membersWithValueAttribute.Count != enumMembers.Count(x => x is IFieldSymbol { ConstantValue: { } }))
         {
             throw new ArgumentException($"All `StaticDictionary` enum members must have `Value` attribyte. At {enumSymbol.Name}.");

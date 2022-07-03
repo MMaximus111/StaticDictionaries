@@ -406,4 +406,27 @@ namespace StaticDictionaries.Tests.StaticDictionaries
         output.Should().Contain((membersQuantity - 1).ToString());
         diagnostics.Should().BeNullOrEmpty();
     }
+
+    [Fact]
+    public void EnumWithoutValuesAttributesMustBeIgnored()
+    {
+        const string input = @"
+
+using StaticDictionaries.Attributes;
+
+namespace StaticDictionaries.Tests.StaticDictionaries
+{
+   [StaticDictionary]
+    public enum EnumWithoutSettedIdAndNameAndWithoutValues
+    {
+        Value1 = 1,
+        Value2 = 2
+    }
+}";
+
+        (ImmutableArray<Diagnostic> diagnostics, string output) = CompilationTestHelper.GetGeneratedOutput<StaticDictionaryGenerator>(input);
+
+        output.Should().BeNullOrEmpty();
+        diagnostics.Should().BeNullOrEmpty();
+    }
 }
