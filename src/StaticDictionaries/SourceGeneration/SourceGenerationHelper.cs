@@ -79,16 +79,26 @@ namespace ").Append(dictionaryToGenerate.Namespace).Append(@"
     /// </summary>
     public const int MaxId = ").Append(dictionaryToGenerate.Members.Max(x => x.Id)).Append(";");
 
+        sb.AppendLine();
+
         sb.Append(@"/// <summary>
     /// Min id of enum.
     /// Returns identifier of member that cannot be overridden by attribute arguments.
     /// </summary>
     public const int MinId = ").Append(dictionaryToGenerate.Members.Min(x => x.Id)).Append(";");
 
+        sb.AppendLine();
+
         int i = 0;
         foreach (string propertyName in propertyNames)
         {
             Type type = dictionaryToGenerate.PropertyTypes[i];
+
+            sb.AppendLine(@"
+        /// <summary>
+        /// Generated method by StaticDictionaries.
+        /// </summary>
+        /// <returns>Value for defined property.</returns>");
 
             sb.AppendLine(@$"public static {type.Name} {propertyName}(this {dictionaryToGenerate.Name} member)");
             sb.Append("{");
@@ -113,6 +123,11 @@ namespace ").Append(dictionaryToGenerate.Namespace).Append(@"
 
         sb.AppendLine();
 
+        sb.AppendLine(@"
+        /// <summary>
+        /// Generated method by StaticDictionaries.
+        /// </summary>
+        /// <returns>Enum member by id.</returns>");
         sb.AppendLine(@$"public static {dictionaryToGenerate.Name} GetById(int id)");
         sb.AppendLine("{");
         sb.Append(@" return id switch {");
@@ -129,6 +144,11 @@ namespace ").Append(dictionaryToGenerate.Namespace).Append(@"
         sb.AppendLine("};");
         sb.AppendLine("}");
 
+        sb.AppendLine(@"
+        /// <summary>
+        /// Generated method by StaticDictionaries.
+        /// </summary>
+        /// <returns>Array of all enum members.</returns>");
         sb.AppendLine($@"public static {dictionaryToGenerate.Name}[] All()");
         sb.AppendLine("{");
         sb.AppendLine("return new[]");
