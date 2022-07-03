@@ -11,13 +11,8 @@ internal static class EnumProcessor
     {
         List<EnumDictionaryToGenerate> dictionariesToGenerate = new List<EnumDictionaryToGenerate>();
 
-        INamedTypeSymbol? staticDictionaryAttribute = compilation.GetTypeByMetadataName(AttributeConstants.StaticDictionaryAttributeFullName);
-        INamedTypeSymbol? valueAttribute = compilation.GetTypeByMetadataName(AttributeConstants.ValueAttributeFullName);
-
-        if (staticDictionaryAttribute == null || valueAttribute == null)
-        {
-            return dictionariesToGenerate;
-        }
+        INamedTypeSymbol staticDictionaryAttribute = compilation.GetTypeByMetadataName(AttributeConstants.StaticDictionaryAttributeFullName)!;
+        INamedTypeSymbol valueAttribute = compilation.GetTypeByMetadataName(AttributeConstants.ValueAttributeFullName)!;
 
         Regex propertyNameRegex = new Regex("^[A-Za-z\\d]+$");
 

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Immutable;
+using System.Text;
 using FluentAssertions;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
@@ -328,6 +329,7 @@ using StaticDictionaries.Attributes;
 
 namespace StaticDictionaries.Tests.StaticDictionaries
 {{
+        [StaticDictionary(""Real"")]
         {accessMidifiedName} enum MyEnum
         {{
             [Value(true)]
@@ -339,7 +341,66 @@ namespace StaticDictionaries.Tests.StaticDictionaries
 
         (ImmutableArray<Diagnostic> diagnostics, string output) = CompilationTestHelper.GetGeneratedOutput<StaticDictionaryGenerator>(input);
 
-        // output.Should().Contain("MyEnum");
-        // diagnostics.Should().BeNullOrEmpty();
+        output.Should().Contain("MyEnum");
+        diagnostics.Should().BeNullOrEmpty();
+    }
+
+    [Fact]
+    public void EnumWithAnotherAttributeMustBeIgnored()
+    {
+        const string input = @"
+
+using StaticDictionaries.Attributes;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace StaticDictionaries.Tests.StaticDictionaries
+{
+
+    [Serializable]
+    public enum EnumWithAnotherAttribute
+    {
+        [CLSCompliant(true)]
+        Member1,
+        Member2
+    }
+}";
+
+        (ImmutableArray<Diagnostic> diagnostics, string output) = CompilationTestHelper.GetGeneratedOutput<StaticDictionaryGenerator>(input);
+
+        output.Should().BeNullOrEmpty();
+        diagnostics.Should().BeNullOrEmpty();
+    }
+
+    [Theory]
+    [InlineData(10)]
+    [InlineData(100)]
+    [InlineData(1000)]
+    [InlineData(10000)]
+    public void BigEnumMustWorkCorrect(int membersQuantity)
+    {
+        StringBuilder sb = new StringBuilder();
+
+        for (int i = 0; i < membersQuantity; i++)
+        {
+            sb.AppendLine($"[Value({(i % 2 == 0).ToString().ToLower()}, \"{Guid.NewGuid()}\")]");
+            sb.AppendLine($"Member{i} = {i},");
+        }
+
+        string input = $@"
+using StaticDictionaries.Attributes;
+
+namespace StaticDictionaries.Tests.StaticDictionaries
+{{
+        [StaticDictionary(""Real"", ""Payload"")]
+        public enum Qwerty
+        {{
+            {sb}
+        }}
+}}";
+
+        (ImmutableArray<Diagnostic> diagnostics, string output) = CompilationTestHelper.GetGeneratedOutput<StaticDictionaryGenerator>(input);
+
+        output.Should().Contain("Qwerty");
+        diagnostics.Should().BeNullOrEmpty();
     }
 }
