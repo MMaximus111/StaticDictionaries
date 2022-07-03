@@ -119,6 +119,7 @@ public enum IncorrectEnum
     [InlineData("Name ")]
     [InlineData(" Name")]
     [InlineData(" NameName2")]
+    [InlineData("Method Name")]
     [InlineData(" ")]
     public void IncrorrectStaticDictionaryAttributeArgumentsName_MustThrowException(string incorrectArgument)
     {
@@ -183,17 +184,26 @@ namespace StaticDictionaries.Tests.StaticDictionaries2
     [InlineData("4090@#*&^768<>/...,<>./...,<?:;\\\";l;")]
     [InlineData("               ")]
     [InlineData("")]
+    [InlineData("True")]
+    [InlineData("false")]
+    [InlineData("NULL")]
+    [InlineData("\n\r\\\"|\"\\   ;")]
     [InlineData(777)]
     [InlineData(123.68)]
     [InlineData(5656.8)]
     [InlineData(-676.111122)]
+    [InlineData(0.000)]
+    [InlineData(0)]
+    [InlineData(-1.0)]
     [InlineData(99999999.8)]
     [InlineData(true)]
     [InlineData(false)]
     [InlineData('.')]
+    [InlineData('中')]
     [InlineData('\\')]
     [InlineData('!')]
     [InlineData(' ')]
+    [InlineData(';')]
     public void CheckAllSupportedPrimitiveTypes(object typeValue)
     {
         string input = $@"
@@ -264,7 +274,7 @@ namespace StaticDictionaries.Tests.StaticDictionaries
     [Fact]
     public void AllEnumMembersMustHaveValueAttribute()
     {
-        string input = $@"
+        const string input = $@"
 using StaticDictionaries.Attributes;
 
 namespace StaticDictionaries.Tests.StaticDictionaries
@@ -282,5 +292,54 @@ namespace StaticDictionaries.Tests.StaticDictionaries
 
         output.Should().BeNullOrEmpty();
         diagnostics.First().GetMessage().Should().Contain("All `StaticDictionary` enum members must have `Value` attribyte.");
+    }
+
+    [Fact]
+    public void EnumWithoutStaticDictionariesAttributeButWithValueAttributesMustBeIgnored()
+    {
+        const string input = @"
+using StaticDictionaries.Attributes;
+
+namespace StaticDictionaries.Tests.StaticDictionaries
+{{
+        public enum Mobile
+        {{
+            [Value(true)]
+            Apple = 1,
+            [Value(false)]
+            Windows = 2
+        }}
+}}";
+
+        (ImmutableArray<Diagnostic> diagnostics, string output) = CompilationTestHelper.GetGeneratedOutput<StaticDictionaryGenerator>(input);
+
+        output.Should().BeEmpty();
+        diagnostics.Should().BeNullOrEmpty();
+    }
+
+    [Theory]
+    [InlineData("public")]
+    [InlineData("private")]
+    [InlineData("internal")]
+    public void AllAccessModifierMustWorkCorrect(string accessMidifiedName)
+    {
+        string input = $@"
+using StaticDictionaries.Attributes;
+
+namespace StaticDictionaries.Tests.StaticDictionaries
+{{
+        {accessMidifiedName} enum MyEnum
+        {{
+            [Value(true)]
+            Apple = 1,
+            [Value(false)]
+            Windows = 2
+        }}
+}}";
+
+        (ImmutableArray<Diagnostic> diagnostics, string output) = CompilationTestHelper.GetGeneratedOutput<StaticDictionaryGenerator>(input);
+
+        output.Should().Contain("MyEnum");
+        diagnostics.Should().BeNullOrEmpty();
     }
 }

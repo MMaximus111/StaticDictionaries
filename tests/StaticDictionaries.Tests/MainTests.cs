@@ -88,4 +88,20 @@ public class MainTests
         const int minId = EmployeeExtensions.MinId;
         minId.Should().Be(1);
     }
+
+    [Fact]
+    public void EnumWithDifferentDataTypesAndDuplicatedValueAttributeMustWorkWell()
+    {
+        StrangeEnum.duck.Id().Should().Be((int)StrangeEnum.duck);
+
+        StrangeEnumExtensions.Length.Should().Be(4);
+        StrangeEnum.Tiger.priCE().Should().Be(10.00);
+        StrangeEnum.Elephant.Active().Should().Be(true);
+
+        StrangeEnumExtensions.MinId.Should().Be(1);
+        StrangeEnumExtensions.MaxId.Should().Be(1000000);
+
+        StrangeEnumExtensions.All().Length.Should().Be(4);
+        StrangeEnumExtensions.All().First().Should().Be(StrangeEnum.duck);
+    }
 }
