@@ -23,17 +23,13 @@ jobs:
       run: dotnet build --no-restore --configuration Release
     - name: Test
       run: dotnet test --no-build --verbosity normal --configuration Release --framework net6.0 --collect:"XPlat Code Coverage" --results-directory ./coverage
-    - name: Copy test coverage
-      run: cp coverage/**/coverage.cobertura.xml coverage.cobertura.xml
-    - name: Code Coverage Summary Report
-      uses: irongut/CodeCoverageSummary@v1.2.0
+    - name: Upload coverage to Codecov
+      uses: codecov/codecov-action@v3
       with:
-        filename: coverage.cobertura.xml
-        badge: true
-        fail_below_min: true
-        format: markdown
-        hide_branch_rate: false
-        hide_complexity: true
-        indicators: true
-        output: both
-        thresholds: '60 80'
+        directory: ./coverage/reports/
+        fail_ci_if_error: true
+        files: ./coverage1.xml,./coverage2.xml
+        flags: unittests
+        name: codecov-umbrella
+        path_to_write_report: ./coverage/codecov_report.txt
+        verbose: true
