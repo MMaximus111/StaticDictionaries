@@ -40,7 +40,10 @@ John = 1
 
 3. Build project to run source generator and get access to generated methods:
 ```csharp
+int id = User.John.Id();
 int age = User.John.Age();
+string name = User.John.Name();
+string surname = User.John.Surname();
 ```
 
 ## Powerful `enum` management 🦾
