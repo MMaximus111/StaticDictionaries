@@ -132,9 +132,11 @@ namespace ").Append(dictionaryToGenerate.Namespace).Append(@"
         sb.AppendLine("{");
         sb.Append(@" return id switch {");
 
+        int idPropertyPosition = propertyNames.IndexOf(IdPropertyName);
+
         foreach (EnumMemberDefinition? member in dictionaryToGenerate.Members)
         {
-            sb.Append(@"").Append(member.Id).Append(" => ");
+            sb.Append(@"").Append(member.Values[idPropertyPosition]).Append(" => ");
 
             sb.Append(dictionaryToGenerate.Name).Append(".").Append(member.MemberName).Append(",");
             sb.AppendLine();

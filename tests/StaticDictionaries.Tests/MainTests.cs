@@ -40,17 +40,14 @@ public class MainTests
         statuses.First().Should().Be(Status.New);
     }
 
-    [Fact]
-    public void GetById()
+    [Theory]
+    [InlineData(1, Status.New)]
+    [InlineData(4, Status.Ready)]
+    [InlineData(5, Status.Completed)]
+    [InlineData(8, Status.LastStatus)]
+    public void GetById(int id, Status expectedStatus)
     {
-        Employee maximEmployee = EmployeeExtensions.GetById(1);
-        maximEmployee.Should().Be(Employee.Maxim);
-
-        Employee johnEmployee = EmployeeExtensions.GetById(2);
-        johnEmployee.Should().Be(Employee.John);
-
-        Status status = StatusExtensions.GetById(4);
-        status.Name().Should().Be("Ready1");
+        id.Should().Be((int)expectedStatus);
     }
 
     [Fact]
@@ -103,5 +100,35 @@ public class MainTests
 
         StrangeEnumExtensions.All().Length.Should().Be(4);
         StrangeEnumExtensions.All().First().Should().Be(StrangeEnum.duck);
+    }
+
+    [Theory]
+    [InlineData(Status.Finished)]
+    [InlineData(Status.Packing)]
+    [InlineData(Status.InProgress)]
+    [InlineData(Status.LastStatus)]
+    public void DefaultIdMethodMustWorkCorrect(Status status)
+    {
+        status.Id().Should().Be((int)status);
+    }
+
+    [Theory]
+    [InlineData(Employee.John)]
+    [InlineData(Employee.Maxim)]
+    public void NameMethodMustWorkCorrect(Employee employee)
+    {
+        employee.Id().Should().Be((int)employee);
+    }
+
+    [Theory]
+    [InlineData(666, OverriddenIdProperty.Member1)]
+    [InlineData(555, OverriddenIdProperty.Member2)]
+    [InlineData(111, OverriddenIdProperty.Member3)]
+    [InlineData(9999999, OverriddenIdProperty.Member4)]
+    public void GetByIdMustFindByOverridenIdIfItExists(int overriddenId, OverriddenIdProperty enumMember)
+    {
+        enumMember.Id().Should().Be(overriddenId);
+
+        OverriddenIdPropertyExtensions.GetById(overriddenId).Should().Be(enumMember);
     }
 }

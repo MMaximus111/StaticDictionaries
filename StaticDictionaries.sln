@@ -17,6 +17,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "images", "images", "{13E49D
 		images\dictionary.png = images\dictionary.png
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StaticDictionaries.IntegrationTests", "tests\StaticDictionaries.IntegrationTests\StaticDictionaries.IntegrationTests.csproj", "{6A7B6300-412F-4C8C-AF18-7379B07AD0BF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,11 +41,16 @@ Global
 		{EBA8F50F-3416-4EE7-A662-CED040C9C6E0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EBA8F50F-3416-4EE7-A662-CED040C9C6E0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EBA8F50F-3416-4EE7-A662-CED040C9C6E0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6A7B6300-412F-4C8C-AF18-7379B07AD0BF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6A7B6300-412F-4C8C-AF18-7379B07AD0BF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6A7B6300-412F-4C8C-AF18-7379B07AD0BF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6A7B6300-412F-4C8C-AF18-7379B07AD0BF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{F0047297-F2D6-4580-81FE-CB1BE273996A} = {0A33D3A6-E3E1-4F75-AFB2-C90850D3A40C}
 		{EBA8F50F-3416-4EE7-A662-CED040C9C6E0} = {0A33D3A6-E3E1-4F75-AFB2-C90850D3A40C}
 		{45EEB3BA-5BCC-46B2-A74E-6B4DF2A42550} = {88845CDC-3F4A-4DC1-836D-1B2CBC45C2CC}
 		{5318DE4F-E84C-4C02-AE00-255959AF3596} = {88845CDC-3F4A-4DC1-836D-1B2CBC45C2CC}
+		{6A7B6300-412F-4C8C-AF18-7379B07AD0BF} = {88845CDC-3F4A-4DC1-836D-1B2CBC45C2CC}
 	EndGlobalSection
 EndGlobal
