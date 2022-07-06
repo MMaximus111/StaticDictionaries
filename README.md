@@ -1,8 +1,8 @@
 # StaticDictionaries 📚
 [![.NET](https://github.com/MMaximus111/StaticDictionaries/actions/workflows/dotnet.yml/badge.svg?branch=master)](https://github.com/MMaximus111/StaticDictionaries/actions/workflows/dotnet.yml)
+[![code-quality](https://github.com/MMaximus111/StaticDictionaries/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/MMaximus111/StaticDictionaries/actions/workflows/codeql-analysis.yml)
 [![CodeFactor](https://www.codefactor.io/repository/github/mmaximus111/staticdictionaries/badge)](https://www.codefactor.io/repository/github/mmaximus111/staticdictionaries)
 [![codecov](https://codecov.io/gh/MMaximus111/StaticDictionaries/branch/master/graph/badge.svg?token=FAIIC9CRXP)](https://codecov.io/gh/MMaximus111/StaticDictionaries)
-[![Known Vulnerabilities](https://snyk.io/test/github/MMaximus111/StaticDictionaries/badge.svg)]
 [![License: MIT](https://img.shields.io/badge/License-MIT-purple.svg)](https://opensource.org/licenses/MIT)
 [![NuGet version (SoftCircuits.Silk)](https://img.shields.io/nuget/v/StaticDictionaries?color=blue&style=plastic?logoHeight=45)](https://www.nuget.org/packages/StaticDictionaries)
 
