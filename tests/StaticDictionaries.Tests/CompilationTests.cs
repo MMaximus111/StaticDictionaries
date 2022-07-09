@@ -250,8 +250,20 @@ namespace StaticDictionaries.Tests.StaticDictionaries
         diagnostics.First().GetMessage().Should().Contain("Property names must not be dublicated");
     }
 
-    [Fact]
-    public void DifferentParameterTypes_MustThrowException()
+    [Theory]
+    [InlineData("'1'", "\"#\"")]
+    [InlineData("true", "\"false\"")]
+    [InlineData("\"\"", "123")]
+    [InlineData("777.1", "'_'")]
+    [InlineData("'0'", "0")]
+    [InlineData("true", "1")]
+    [InlineData("false", "0")]
+    [InlineData("\"qwerty\"", "1")]
+    [InlineData("0.0", "false")]
+    [InlineData("true", "\"true\"")]
+    [InlineData("false", "\"false\"")]
+    [InlineData("7", "'7'")]
+    public void DifferentParameterTypes_MustThrowException(string param1, string param2)
     {
         string input = $@"
 using StaticDictionaries.Attributes;
@@ -261,9 +273,9 @@ namespace StaticDictionaries.Tests.StaticDictionaries
         [StaticDictionary(""Property"")]
         public enum Mobile
         {{
-            [Value(true)]
+            [Value({param1})]
             Apple = 1,
-            [Value('c')]
+            [Value({param2})]
             Windows = 2
         }}
 }}";
@@ -272,6 +284,101 @@ namespace StaticDictionaries.Tests.StaticDictionaries
 
         output.Should().BeNullOrEmpty();
         diagnostics.First().GetMessage().Should().Contain("has incorrect attribute parameter type. Enum:");
+    }
+
+    [Theory]
+    [InlineData("17", "1.0")]
+    [InlineData("55", "55.55")]
+    [InlineData("0", "0.0")]
+    [InlineData("77.7", "77")]
+    [InlineData("\"12\"", "\"12\"")]
+    [InlineData("0.0", "0")]
+    [InlineData("true", "false")]
+    [InlineData("false", "true")]
+    [InlineData("'1'", "'9'")]
+    [InlineData("777777.77", "777777")]
+    [InlineData("\"\"", "\"\"")]
+    [InlineData("'.'", "'@'")]
+    public void SimilarParameterTypes_MustWorkCorrect(string param1, string param2)
+    {
+        string input = $@"
+using StaticDictionaries.Attributes;
+
+namespace StaticDictionaries.Tests.StaticDictionaries
+{{
+        [StaticDictionary(""Property"")]
+        public enum Tester
+        {{
+            [Value({param1})]
+            Apple = 1,
+            [Value({param2})]
+            Windows = 2
+        }}
+}}";
+
+        (ImmutableArray<Diagnostic> diagnostics, string output) = CompilationTestHelper.GetGeneratedOutput<StaticDictionaryGenerator>(input);
+
+        output.Should().Contain("Tester");
+        diagnostics.Should().BeNullOrEmpty();
+    }
+
+    [Fact]
+    public void IntAndDoubleOnOnePositionMustWorkCorrect()
+    {
+        const string input = $@"
+using StaticDictionaries.Attributes;
+
+namespace StaticDictionaries.Tests.StaticDictionaries;
+
+[StaticDictionary(""Name"", ""Price"", ""Price2"")]
+    public enum EnumWithIntAndDouble
+    {{
+        [Value(""Name1"", 67.89, 100)]
+        Member1 = 1,
+        [Value(""Name2"", 67, 100.123)]
+        Member2 = 2
+    }}";
+
+        (ImmutableArray<Diagnostic> diagnostics, string output) = CompilationTestHelper.GetGeneratedOutput<StaticDictionaryGenerator>(input);
+
+        output.Should().Contain("EnumWithIntAndDouble");
+        diagnostics.Should().BeNullOrEmpty();
+    }
+
+    [Theory]
+    [InlineData("17", "1.0")]
+    [InlineData("55", "55.55")]
+    [InlineData("0", "0.0")]
+    [InlineData("77.7", "77")]
+    [InlineData("\"12\"", "\"12\"")]
+    [InlineData("0.0", "0")]
+    [InlineData("true", "false")]
+    [InlineData("false", "true")]
+    [InlineData("'1'", "'9'")]
+    [InlineData("777777.77", "777777")]
+    [InlineData("\"\"", "\"\"")]
+    [InlineData("'.'", "'@'")]
+    public void SimilarParameterTypes_WithMoreThanOneArgument_MustWorkCorrect(string param1, string param2)
+    {
+        string input = $@"
+using StaticDictionaries.Attributes;
+
+namespace StaticDictionaries.Tests.StaticDictionaries
+{{
+        [StaticDictionary(""Property"", ""Text"", ""Active"", ""Symbol"")]
+        public enum Tester
+        {{
+            [Value(""qwerty"", {param1}, true, 'q')]
+            Apple = 1,
+            [Value(""text"", {param2}, false, '9')]
+            Windows = 2
+        }}
+}}";
+
+        (ImmutableArray<Diagnostic> diagnostics, string output) = CompilationTestHelper.GetGeneratedOutput<StaticDictionaryGenerator>(input);
+
+        output.Should().Contain("Tester");
+        diagnostics.Should().BeNullOrEmpty();
     }
 
     [Fact]

@@ -114,7 +114,25 @@ internal static class EnumProcessor
                 int argumentPosition = 0;
                 foreach (TypedConstant attributeArgument in firstArgument.Values)
                 {
-                    if ((attributeArgument.Value?.GetType() ?? typeof(object)) != propertyTypes[argumentPosition])
+                    Type argumentType = attributeArgument.Value?.GetType() ?? typeof(object);
+                    Type expectedType = propertyTypes[argumentPosition];
+
+                    // logic inside statement allows using int and double types in the same position arguments
+                    if (!firstMember)
+                    {
+                        if (argumentType == typeof(double) && expectedType == typeof(int))
+                        {
+                            expectedType = typeof(double);
+                            propertyTypes[argumentPosition] = typeof(double);
+                        }
+
+                        if (argumentType == typeof(int) && expectedType == typeof(double))
+                        {
+                            argumentType = typeof(double);
+                        }
+                    }
+
+                    if (argumentType != expectedType)
                     {
                         throw new ArgumentException($"`StaticDictionary` enum member {member.Name} has incorrect attribute parameter type. Enum: {enumSymbol.Name}. EnumMember: {member.Name}. Parameter: {attributeArgument.Value}");
                     }

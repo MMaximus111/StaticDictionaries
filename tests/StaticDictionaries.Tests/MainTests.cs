@@ -131,4 +131,17 @@ public class MainTests
 
         OverriddenIdPropertyExtensions.GetById(overriddenId).Should().Be(enumMember);
     }
+
+    [Fact]
+    public void EnumWithIntAndDoubleMustWotkCorrectAndConvertIntToDoubleType()
+    {
+        double member1Price = EnumWithIntAndDouble.Member1.Price();
+        member1Price.Should().Be(67.89);
+
+        double member2Price = EnumWithIntAndDouble.Member2.Price2();
+        member2Price.Should().Be(100.123);
+
+        EnumWithIntAndDouble.Member1.Id().Should().Be(1);
+        EnumWithIntAndDouble.Member2.Id().Should().Be(2);
+    }
 }
