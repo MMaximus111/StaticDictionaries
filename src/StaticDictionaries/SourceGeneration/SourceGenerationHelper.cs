@@ -121,6 +121,35 @@ namespace ").Append(dictionaryToGenerate.Namespace).Append(@"
             i++;
         }
 
+        i = 0;
+        foreach (string propertyName in propertyNames)
+        {
+            Type type = dictionaryToGenerate.PropertyTypes[i];
+
+            sb.AppendLine(@"
+        /// <summary>
+        /// Generated method by StaticDictionaries.
+        /// </summary>
+        /// <returns>Value for defined property.</returns>");
+
+            sb.AppendLine(@$"public static {type.Name} {propertyName}PoweredByIf(this {dictionaryToGenerate.Name} member)");
+            sb.Append("{");
+            sb.AppendLine();
+
+            foreach ((string MemberName, object value) property in dictionaryToGenerate.Members.Select(x => (x.MemberName, x.Values[i]!)))
+            {
+                sb.AppendLine($"if (member == {dictionaryToGenerate.Name}.{property.MemberName})");
+                sb.AppendLine($"return {ToLiteral(property.value)};");
+            }
+
+            sb.AppendLine("return default;");
+            sb.AppendLine("}");
+            sb.AppendLine();
+            sb.AppendLine();
+
+            i++;
+        }
+
         sb.AppendLine();
 
         sb.AppendLine(@"
