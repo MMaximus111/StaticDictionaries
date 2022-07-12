@@ -103,38 +103,6 @@ namespace ").Append(dictionaryToGenerate.Namespace).Append(@"
             sb.AppendLine(@$"public static {type.Name} {propertyName}(this {dictionaryToGenerate.Name} member)");
             sb.Append("{");
             sb.AppendLine();
-            sb.Append(@" return member switch {");
-            sb.AppendLine();
-
-            foreach ((string MemberName, object value) property in dictionaryToGenerate.Members.Select(x => (x.MemberName, x.Values[i]!)))
-            {
-                sb.Append($"{dictionaryToGenerate.Name}.{property.MemberName} => {ToLiteral(property.value)},");
-                sb.AppendLine();
-            }
-
-            sb.AppendLine();
-            sb.AppendLine("};");
-            sb.AppendLine("}");
-            sb.AppendLine();
-            sb.AppendLine();
-
-            i++;
-        }
-
-        i = 0;
-        foreach (string propertyName in propertyNames)
-        {
-            Type type = dictionaryToGenerate.PropertyTypes[i];
-
-            sb.AppendLine(@"
-        /// <summary>
-        /// Generated method by StaticDictionaries.
-        /// </summary>
-        /// <returns>Value for defined property.</returns>");
-
-            sb.AppendLine(@$"public static {type.Name} {propertyName}PoweredByIf(this {dictionaryToGenerate.Name} member)");
-            sb.Append("{");
-            sb.AppendLine();
 
             foreach ((string MemberName, object value) property in dictionaryToGenerate.Members.Select(x => (x.MemberName, x.Values[i]!)))
             {
@@ -144,7 +112,6 @@ namespace ").Append(dictionaryToGenerate.Namespace).Append(@"
 
             sb.AppendLine("return default;");
             sb.AppendLine("}");
-            sb.AppendLine();
             sb.AppendLine();
 
             i++;
@@ -159,21 +126,19 @@ namespace ").Append(dictionaryToGenerate.Namespace).Append(@"
         /// <returns>Enum member by id.</returns>");
         sb.AppendLine(@$"public static {dictionaryToGenerate.Name} GetById(int id)");
         sb.AppendLine("{");
-        sb.Append(@" return id switch {");
 
         int idPropertyPosition = propertyNames.IndexOf(IdPropertyName);
 
         foreach (EnumMemberDefinition? member in dictionaryToGenerate.Members)
         {
-            sb.Append(@"").Append(member.Values[idPropertyPosition]).Append(" => ");
-
-            sb.Append(dictionaryToGenerate.Name).Append(".").Append(member.MemberName).Append(",");
-            sb.AppendLine();
+            sb.AppendLine($"if (id == {member.Values[idPropertyPosition]})");
+            sb.AppendLine($"return {dictionaryToGenerate.Name}.{member.MemberName};");
         }
-        sb.Append("_ => ");
-        sb.Append("throw new NotSupportedException() ");
-        sb.AppendLine("};");
+
+        sb.AppendLine("return default;");
+
         sb.AppendLine("}");
+        sb.AppendLine();
 
         sb.AppendLine(@"
         /// <summary>

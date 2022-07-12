@@ -1,56 +1,43 @@
-﻿using System.Reflection;
-using BenchmarkDotNet.Attributes;
+﻿using BenchmarkDotNet.Attributes;
 using StaticDictionaries.Benchmarks.StaticDictionaries;
 
 namespace StaticDictionaries.Benchmarks;
 
 public class Benchmarks
 {
-    // [Benchmark]
-    // public void AccessIntPropertyViaMethod()
-    // {
-    //     int speed = Cars.Porsche.MaxSpeed();
-    // }
-    //
-    // [Benchmark]
-    // public void AccessNamePropertyViaMethod()
-    // {
-    //     string porscheName = Cars.Porsche.Name();
-    // }
-    //
-    // [Benchmark]
-    // public void ClassicAccessOfMemberId()
-    // {
-    //     int porscheId = (int)Cars.Porsche;
-    // }
-    //
-    // [Benchmark]
-    // public void ClassicAccessToMemberName()
-    // {
-    //     string name = nameof(Cars.Porsche);
-    // }
-    //
-    // [Benchmark]
-    // public void GetAllMemberViaGeneratedExtensionClass()
-    // {
-    //     Cars[] cars = CarsExtensions.All();
-    // }
-    //
-    // [Benchmark]
-    // public void GetAllMemberViaReflection()
-    // {
-    //     PropertyInfo[] carsProperties = typeof(Cars).GetProperties();
-    // }
-
     [Benchmark]
-    public void Switch()
+    public void ClassicAccessToMemberName()
     {
-        int id = Cars.Porsche.Id();
+        string name = nameof(Cars.Bmw);
     }
 
     [Benchmark]
-    public void If()
+    public void GeneratedAccessToMemberName()
     {
-        int id = Cars.Porsche.IdPoweredByIf();
+        string porscheName = Cars.Bmw.Name();
+    }
+
+    [Benchmark]
+    public void ReflectionGetAllMembers()
+    {
+        Array cars = Enum.GetValues(typeof(Cars));
+    }
+
+    [Benchmark]
+    public void GeneratedGetAllMembers()
+    {
+        Cars[] cars = CarsExtensions.All();
+    }
+
+    [Benchmark]
+    public void GetEnumMemberById()
+    {
+        Cars car = (Cars)3;
+    }
+
+    [Benchmark]
+    public void GeneratedGetEnumMemberById()
+    {
+        Cars car = CarsExtensions.GetById(3);
     }
 }

@@ -9,6 +9,10 @@ namespace StaticDictionaries.Attributes;
 [AttributeUsage(AttributeTargets.Enum)]
 public class StaticDictionaryAttribute : Attribute
 {
+    /// <summary>
+    /// Define names for generated properties.
+    /// </summary>
+    /// <param name="propertyNames">Names for generated properties.</param>
     public StaticDictionaryAttribute(params string[] propertyNames)
     {
     }

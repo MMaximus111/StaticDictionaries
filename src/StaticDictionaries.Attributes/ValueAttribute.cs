@@ -8,6 +8,10 @@ namespace StaticDictionaries.Attributes;
 [ExcludeFromCodeCoverage]
 public class ValueAttribute : Attribute
 {
+    /// <summary>
+    /// Defines enum member property values.
+    /// </summary>
+    /// <param name="values">Enum member property values.</param>
     public ValueAttribute(params object[] values)
     {
     }

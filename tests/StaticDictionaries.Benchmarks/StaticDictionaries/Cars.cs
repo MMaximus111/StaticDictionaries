@@ -12,5 +12,7 @@ public enum Cars
     [Value(75_000, "Bawarian machinen werke.", 260)]
     Bmw = 3,
     [Value(40_000, "Volvo group.", 232)]
-    Volvo = 4
+    Volvo = 4,
+    [Value(22_000, "Mazda Japan.", 197)]
+    Mazda = 5
 }
