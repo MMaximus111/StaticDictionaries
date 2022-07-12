@@ -144,3 +144,22 @@ public static void Main()
 * Parameter types are determined automatically, so all parameters in a sequence must be of the same type.
 For example, all of the first types should be `string`, and all of the second types should be `bool`.
 
+## Performance 🚀
+Despite the convenient format of use, the performance remained at a high level, and thanks to separate methods for working with an `Enum` without reflection, performance increased significantly in some indicators:
+``` ini
+BenchmarkDotNet=v0.13.1, OS=Windows 10.0.19044.1766 (21H2)
+AMD Ryzen 5 3600, 1 CPU, 12 logical and 6 physical cores
+.NET SDK=6.0.301
+  [Host]     : .NET 6.0.6 (6.0.622.26707), X64 RyuJIT  [AttachedDebugger]
+  DefaultJob : .NET 6.0.6 (6.0.622.26707), X64 RyuJIT
+ ```
+
+|                      Method |        Mean |     Error |    StdDev |      Median |
+|---------------------------- |------------:|----------:|----------:|------------:|
+|   ClassicAccessToMemberName |   0.0001 ns | 0.0002 ns | 0.0001 ns |   0.0001 ns |
+| GeneratedAccessToMemberName |   0.0039 ns | 0.0041 ns | 0.0030 ns |   0.0014 ns |
+|     ReflectionGetAllMembers | 562.4409 ns | 3.8498 ns | 3.6011 ns | 562.4710 ns |
+|      GeneratedGetAllMembers |   5.6408 ns | 0.1011 ns | 0.0946 ns |   5.6575 ns |
+|           GetEnumMemberById |   0.0008 ns | 0.0008 ns | 0.0007 ns |   0.0004 ns |
+|  GeneratedGetEnumMemberById |   0.0001 ns | 0.0002 ns | 0.0002 ns |   0.0000 ns |
+
