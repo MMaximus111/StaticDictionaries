@@ -6,12 +6,12 @@
         <TargetFramework>netstandard2.0</TargetFramework>
         <LangVersion>10</LangVersion>
         <Authors>Maxim Usatenko</Authors>
-        <VersionPrefix>1.0.0</VersionPrefix>
+        <VersionPrefix>1.1.0</VersionPrefix>
         <PackageIcon>dictionary.png</PackageIcon>
         <ImplicitUsings>enable</ImplicitUsings>
         <PackageLicenseFile>LICENSE</PackageLicenseFile>
         <Description>Simple high performance solution for data hardcoding. Smart. Flexible. Powerful.</Description>
-        <PackageReleaseNotes>First release with main functionality.</PackageReleaseNotes>
+        <PackageReleaseNotes>Performance improvements and useful features.</PackageReleaseNotes>
         <Nullable>enable</Nullable>  
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
         <PackageReadmeFile>README.md</PackageReadmeFile>
