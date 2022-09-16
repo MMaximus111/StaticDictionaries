@@ -51,8 +51,6 @@ string surname = User.John.Surname();
 
 Source generator creates some methods in [EnumName]Extensions class for convenient and fast `enum` management:
 
-[EnumName]Extensions class methods and properties:
-
 * `Length` quantity of all enum members.
 * `MinId` returns min `Id()`.
 * `MaxId` returns max `Id()`.
