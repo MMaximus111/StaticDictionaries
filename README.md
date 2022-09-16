@@ -51,11 +51,16 @@ string surname = User.John.Surname();
 
 Source generator creates some methods in [EnumName]Extensions class for convenient and fast `enum` management:
 
+[EnumName]Extensions class methods and properties:
+
 * `Length` quantity of all enum members.
 * `MinId` returns min `Id()`.
 * `MaxId` returns max `Id()`.
 * `All()` returns an array of all `enum` members.
 * `GetById()` returns member or `NotSupportedException`.
+* `Json()` returns serialized `enum` in json format (next release).
+* `Xml()` returns serialized `enum` in xml format (next release).
+* `GenerateInsertSql()` returns generated sql insert script for all `enum` members (next release).
 
 ## Dictionary supported primitive types 🗿
 
