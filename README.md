@@ -140,10 +140,11 @@ public static void Main()
 * `[StaticDictionary]` parameter names must not be duplicated.
 * `[StaticDictionary]` parameter names must use the English alphabet only because they will be generated into methods.
 * All `[Value]` attrubutes must contain such arguments quantity as `[StaticDictionary]`.
-* All `[StaticDictionary]` `enum` members must contain `[Value]` attribute with arguments. 
+* All `[StaticDictionary]` `enum` members can contain `[Value]` attribute with arguments. 
 * Generator creates two methods by default: `Id()` with `(int)member` and `Name()` with `nameof(member)` if you do not override them.
 * `enum` members without `[Value]` attribute will be ignored.
-* `enum property names must not be equal to [EnumName]Extensions (c# naming rules for methods)`.
+* `enum` property names must not be equal to [EnumName]Extensions (c# naming rules for methods).
+* `Json()` and `Xml()` methods generated only if you mark `enum` with `[JsonSupport]` or `[XmlSupport]`. 
 * Parameter types are determined automatically, so all parameters in a sequence must be of the same type.
 For example, all of the first types should be `string`, and all of the second types should be `bool`.
 
