@@ -56,9 +56,8 @@ Source generator creates some methods in [EnumName]Extensions class for convenie
 * `MaxId` returns max `Id()`.
 * `All()` returns an array of all `enum` members.
 * `GetById()` returns member or `NotSupportedException`.
-* `Json()` returns serialized `enum` in json format (next release).
-* `Xml()` returns serialized `enum` in xml format (next release).
-* `GenerateInsertSql()` returns generated sql insert script for all `enum` members (next release).
+* `Json()` returns serialized `enum` in json format (next release 1.2.0).
+* `Xml()` returns serialized `enum` in xml format (next release 1.2.0).
 
 ## Dictionary supported primitive types 🗿
 
@@ -144,6 +143,7 @@ public static void Main()
 * All `[StaticDictionary]` `enum` members must contain `[Value]` attribute with arguments. 
 * Generator creates two methods by default: `Id()` with `(int)member` and `Name()` with `nameof(member)` if you do not override them.
 * `enum` members without `[Value]` attribute will be ignored.
+* `enum property names must not be equal to [EnumName]Extensions (c# naming rules for methods)`.
 * Parameter types are determined automatically, so all parameters in a sequence must be of the same type.
 For example, all of the first types should be `string`, and all of the second types should be `bool`.
 
