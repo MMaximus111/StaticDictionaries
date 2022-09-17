@@ -21,6 +21,7 @@ public class CompilationTests
     [InlineData("cLLass__Name__qwerty", 770, -01, true)]
     [InlineData("className_12_Name____Enum", 770, -01, false)]
     [InlineData("class__Name_99999999999_______N1a2me__21__Enum_", 770, -01, true)]
+    [InlineData("q1w2e3r4", 0, -01.0001, true)]
     public void CanGenerateInStandardCase(string enumName, int age1, int age2, bool active)
     {
         string input = $@"
@@ -44,12 +45,15 @@ public enum {enumName}
 
     [Theory]
     [InlineData("User", '_')]
+    [InlineData("USER", ';')]
     [InlineData("_    /", '.')]
     [InlineData("\"\"    ''", 't')]
     [InlineData("\"\"   .,..,c.gf '''''' \"\"\"\"   \n \\ <   > ;''  ;", '\\')]
     [InlineData("    <   > ;''  ;", '@')]
     [InlineData("    <   > ;''  ;жжвв  й я^ %)(*&^%$#@!", ' ')]
     [InlineData("    <   > ;\n\n\r\' ////  \\  ;жжвв  й я^ %)(*&^%$#@!", '\n')]
+    [InlineData(@"    < \\ \;+  > ;\n\n\r\' ////  \\  ;жжвв  й я^ %)(*&^%$#@!", '"')]
+    [InlineData($"    < \\ \\+  > ;\n\n\r\' ////  \\  ;жжвв  й я*&[]ХЪ{{@! ; ;;;;", '\r')]
     public void SpecialEscapingSymbols(string password, char symbol)
     {
         string input = $@"
@@ -122,6 +126,9 @@ public enum IncorrectEnum
     [InlineData(" NameName2")]
     [InlineData("Method Name")]
     [InlineData(" ")]
+    [InlineData("Мethod")]
+    [InlineData("Method     ")]
+    [InlineData("2qqqqqqqq_qqqqqqqqq")]
     public void IncrorrectStaticDictionaryAttributeArgumentsName_MustThrowException(string incorrectArgument)
     {
         string input = $@"
@@ -185,9 +192,14 @@ namespace StaticDictionaries.Tests.StaticDictionaries2
     [InlineData("4090@#*&^768<>/...,<>./...,<?:;\\\";l;")]
     [InlineData("               ")]
     [InlineData("")]
+    [InlineData(" ")]
     [InlineData("True")]
+    [InlineData("true")]
     [InlineData("false")]
+    [InlineData("False")]
+    [InlineData("FALSE")]
     [InlineData("NULL")]
+    [InlineData("null")]
     [InlineData("\n\r\\\"|\"\\   ;")]
     [InlineData(777)]
     [InlineData(123.68)]
@@ -197,6 +209,7 @@ namespace StaticDictionaries.Tests.StaticDictionaries2
     [InlineData(0)]
     [InlineData(-1.0)]
     [InlineData(99999999.8)]
+    [InlineData(99999999999.00)]
     [InlineData(true)]
     [InlineData(false)]
     [InlineData('.')]
@@ -205,6 +218,15 @@ namespace StaticDictionaries.Tests.StaticDictionaries2
     [InlineData('!')]
     [InlineData(' ')]
     [InlineData(';')]
+    [InlineData('1')]
+    [InlineData('\'')]
+    [InlineData('\n')]
+    [InlineData(@"\ ' "" \\ {{}}")]
+    [InlineData(@$"\ '' ; "";"" \\\\ \n \r [ й qwerty {{}}")]
+    [InlineData(@$""" }};")]
+    [InlineData($"}}")]
+    [InlineData("}{")]
+    [InlineData("1234567890123456789012345678901234567890123456789012345678901234567890")]
     public void CheckAllSupportedPrimitiveTypes(object typeValue)
     {
         string input = $@"
@@ -231,7 +253,7 @@ namespace StaticDictionaries.Tests.StaticDictionaries
     [Fact]
     public void PropertyNamesMustNotBeDuplicated()
     {
-        string input = $@"
+        const string input = $@"
 using StaticDictionaries.Attributes;
 
 namespace StaticDictionaries.Tests.StaticDictionaries
@@ -263,6 +285,8 @@ namespace StaticDictionaries.Tests.StaticDictionaries
     [InlineData("true", "\"true\"")]
     [InlineData("false", "\"false\"")]
     [InlineData("7", "'7'")]
+    [InlineData("7", "\"\"")]
+    [InlineData("'7'", "1")]
     public void DifferentParameterTypes_MustThrowException(string param1, string param2)
     {
         string input = $@"
@@ -292,6 +316,7 @@ namespace StaticDictionaries.Tests.StaticDictionaries
     [InlineData("0", "0.0")]
     [InlineData("77.7", "77")]
     [InlineData("\"12\"", "\"12\"")]
+    [InlineData("\"qwerty\"", "\"google\"")]
     [InlineData("0.0", "0")]
     [InlineData("true", "false")]
     [InlineData("false", "true")]
@@ -382,7 +407,7 @@ namespace StaticDictionaries.Tests.StaticDictionaries
     }
 
     [Fact]
-    public void AllEnumMembersMustHaveValueAttribute()
+    public void NotAllEnumMembersMustHaveValueAttribute()
     {
         const string input = $@"
 using StaticDictionaries.Attributes;
@@ -400,8 +425,8 @@ namespace StaticDictionaries.Tests.StaticDictionaries
 
         (ImmutableArray<Diagnostic> diagnostics, string output) = CompilationTestHelper.GetGeneratedOutput<StaticDictionaryGenerator>(input);
 
-        output.Should().BeNullOrEmpty();
-        diagnostics.First().GetMessage().Should().Contain("All `StaticDictionary` enum members must have `Value` attribyte.");
+        output.Should().NotBeEmpty();
+        diagnostics.Should().BeNullOrEmpty();
     }
 
     [Fact]
@@ -412,6 +437,30 @@ using StaticDictionaries.Attributes;
 
 namespace StaticDictionaries.Tests.StaticDictionaries
 {{
+        public enum Mobile
+        {{
+            [Value(true)]
+            Apple = 1,
+            [Value(false)]
+            Windows = 2
+        }}
+}}";
+
+        (ImmutableArray<Diagnostic> diagnostics, string output) = CompilationTestHelper.GetGeneratedOutput<StaticDictionaryGenerator>(input);
+
+        output.Should().BeEmpty();
+        diagnostics.Should().BeNullOrEmpty();
+    }
+
+    [Fact]
+    public void EnumWithoutStaticDictionariesAttributeButWithXmlSupportAttributesMustBeIgnored()
+    {
+        const string input = @"
+using StaticDictionaries.Attributes;
+
+namespace StaticDictionaries.Tests.StaticDictionaries
+{{
+        [XmlSupport]   
         public enum Mobile
         {{
             [Value(true)]
@@ -485,6 +534,7 @@ namespace StaticDictionaries.Tests.StaticDictionaries
     [InlineData(100)]
     [InlineData(1000)]
     [InlineData(10000)]
+    [InlineData(20000)]
     public void BigEnumMustWorkCorrect(int membersQuantity)
     {
         StringBuilder sb = new StringBuilder();
@@ -534,6 +584,63 @@ namespace StaticDictionaries.Tests.StaticDictionaries
         (ImmutableArray<Diagnostic> diagnostics, string output) = CompilationTestHelper.GetGeneratedOutput<StaticDictionaryGenerator>(input);
 
         output.Should().BeNullOrEmpty();
+        diagnostics.Should().BeNullOrEmpty();
+    }
+
+    [Fact]
+    public void EnumWithJsonAndXmlAttributesMustGenerateCorrect()
+    {
+        const string input = @"
+
+using StaticDictionaries.Attributes;
+
+namespace StaticDictionaries.Tests.StaticDictionaries
+{
+    [XmlSupport]
+    [JsonSupport]
+    [StaticDictionary(""Logo"")]
+    public enum EnumWithXmlAndJsonSupport
+    {
+        [Value(""Logo1"")]
+        Value1 = 1,
+        [Value(""Logo2"")]
+        Value2 = 2
+    }
+}";
+
+        (ImmutableArray<Diagnostic> diagnostics, string output) = CompilationTestHelper.GetGeneratedOutput<StaticDictionaryGenerator>(input);
+
+        output.Should().Contain("Json()");
+        output.Should().Contain("Xml()");
+
+        diagnostics.Should().BeNullOrEmpty();
+    }
+
+    [Fact]
+    public void EnumWithJsonAndWithoutXmlAttributesMustGenerateOnlyJsonMethod()
+    {
+        const string input = @"
+
+using StaticDictionaries.Attributes;
+
+namespace StaticDictionaries.Tests.StaticDictionaries
+{
+    [JsonSupport]
+    [StaticDictionary(""Logo"")]
+    public enum EnumWithXmlAndJsonSupport
+    {
+        [Value(""Logo1"")]
+        Value1 = 1,
+        [Value(""Logo2"")]
+        Value2 = 2
+    }
+}";
+
+        (ImmutableArray<Diagnostic> diagnostics, string output) = CompilationTestHelper.GetGeneratedOutput<StaticDictionaryGenerator>(input);
+
+        output.Should().Contain("Json()");
+        output.Should().NotContain("Xml()");
+
         diagnostics.Should().BeNullOrEmpty();
     }
 }

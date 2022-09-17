@@ -1,6 +1,6 @@
 ﻿namespace StaticDictionaries.SourceGeneration;
 
-internal readonly struct EnumDictionaryToGenerate
+internal sealed class EnumDictionaryToGenerate
 {
     public EnumDictionaryToGenerate(
         string name,
@@ -8,17 +8,25 @@ internal readonly struct EnumDictionaryToGenerate
         IReadOnlyCollection<string> propertyNames,
         List<Type> propertyTypes,
         IReadOnlyCollection<EnumMemberDefinition> members,
-        bool isPublic)
+        bool isPublic,
+        bool xmlSupport,
+        bool jsonSupport)
     {
         Name = name;
         Namespace = nameSpace;
         Members = members;
         IsPublic = isPublic;
+        XmlSupport = xmlSupport;
+        JsonSupport = jsonSupport;
         PropertyNames = propertyNames;
         PropertyTypes = propertyTypes;
     }
 
     public bool IsPublic { get; }
+
+    public bool XmlSupport { get; }
+
+    public bool JsonSupport { get; }
 
     public string Name { get; }
 

@@ -144,4 +144,29 @@ public class MainTests
         EnumWithIntAndDouble.Member1.Id().Should().Be(1);
         EnumWithIntAndDouble.Member2.Id().Should().Be(2);
     }
+
+    [Fact]
+    public void XmlAndJsonSerializationMustWorkCorrect()
+    {
+        string json = EnumWithSerializationSupportExtensions.Json();
+        string xml = EnumWithSerializationSupportExtensions.Xml();
+
+        json.Should().Contain(@"""Nick"": ""CaesarTurbo""");
+        json.Should().Contain(@"""Cost"": 12.23");
+        json.Should().Contain(@"""Active"": true");
+        json.Should().Contain("[");
+        json.Should().Contain("]");
+        json.Should().Contain("{");
+        json.Should().Contain("}");
+        json.Should().Contain(",");
+
+        xml.Should().Contain(@"<?xml version=""1.0"" encoding=""UTF-8""?>");
+        xml.Should().Contain(@"<Nick>MisterMuscle</Nick>");
+        xml.Should().Contain(@"<Id>3</Id>");
+        xml.Should().Contain(@"<Age>22</Age>");
+        xml.Should().Contain(@"<Active>True</Active>");
+        xml.Should().Contain(@"</xml>");
+        xml.Should().Contain(@"<Lobster>");
+        xml.Should().Contain(@"<Mister>");
+    }
 }

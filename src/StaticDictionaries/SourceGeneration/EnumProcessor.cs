@@ -13,6 +13,8 @@ internal static class EnumProcessor
 
         INamedTypeSymbol staticDictionaryAttribute = compilation.GetTypeByMetadataName(AttributeConstants.StaticDictionaryAttributeFullName)!;
         INamedTypeSymbol valueAttribute = compilation.GetTypeByMetadataName(AttributeConstants.ValueAttributeFullName)!;
+        INamedTypeSymbol jsonSupportAttribute = compilation.GetTypeByMetadataName(AttributeConstants.JsonSupportAttributeFullName)!;
+        INamedTypeSymbol xmlSupportAttribute = compilation.GetTypeByMetadataName(AttributeConstants.XmlSupportAttributeFullName)!;
 
         Regex propertyNameRegex = new Regex("^[A-Za-z\\d]+$");
 
@@ -25,11 +27,13 @@ internal static class EnumProcessor
                 enumDeclarationSyntax,
                 propertyNameRegex,
                 staticDictionaryAttribute,
-                valueAttribute);
+                valueAttribute,
+                jsonSupportAttribute,
+                xmlSupportAttribute);
 
             if (processedEnum is not null)
             {
-                dictionariesToGenerate.Add(processedEnum.Value);
+                dictionariesToGenerate.Add(processedEnum);
             }
         }
 
@@ -41,7 +45,9 @@ internal static class EnumProcessor
         SyntaxNode enumDeclarationSyntax,
         Regex propertyNameRegex,
         ISymbol staticDictionaryAttribute,
-        ISymbol valueAttribute)
+        ISymbol valueAttribute,
+        ISymbol jsonSupportAttribute,
+        ISymbol xmlSupportAttribute)
     {
         SemanticModel semanticModel = compilation.GetSemanticModel(enumDeclarationSyntax.SyntaxTree);
 
@@ -153,10 +159,10 @@ internal static class EnumProcessor
             return null;
         }
 
-        if (membersWithValueAttribute.Count != enumMembers.Count(x => x is IFieldSymbol { ConstantValue: { } }))
-        {
-            throw new ArgumentException($"All `StaticDictionary` enum members must have `Value` attribyte. At {enumSymbol.Name}.");
-        }
+        IReadOnlyCollection<INamedTypeSymbol> enumAttributtes = enumSymbol.GetAttributes().Select(x => x.AttributeClass!).ToArray();
+
+        bool jsonSupport = enumAttributtes.Any(x => x.Equals(jsonSupportAttribute, SymbolEqualityComparer.Default));
+        bool xmlSupport = enumAttributtes.Any(x => x.Equals(xmlSupportAttribute, SymbolEqualityComparer.Default));
 
         return new EnumDictionaryToGenerate(
             name: enumSymbol.Name,
@@ -164,7 +170,9 @@ internal static class EnumProcessor
             propertyNames,
             propertyTypes.ToList(),
             members: membersWithValueAttribute,
-            isPublic: enumSymbol.DeclaredAccessibility == Accessibility.Public);
+            isPublic: enumSymbol.DeclaredAccessibility == Accessibility.Public,
+            jsonSupport: jsonSupport,
+            xmlSupport: xmlSupport);
     }
 
     private static void ProcessEnumAttribute(

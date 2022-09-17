@@ -6,17 +6,18 @@
         <TargetFramework>netstandard2.0</TargetFramework>
         <LangVersion>10</LangVersion>
         <Authors>Maxim Usatenko</Authors>
-        <VersionPrefix>1.1.0</VersionPrefix>
+        <VersionPrefix>1.2.0</VersionPrefix>
+        <VersionSuffix>preview.1</VersionSuffix>
         <PackageIcon>dictionary.png</PackageIcon>
         <ImplicitUsings>enable</ImplicitUsings>
         <PackageLicenseFile>LICENSE</PackageLicenseFile>
         <Description>Simple high performance solution for data hardcoding. Smart. Flexible. Powerful.</Description>
-        <PackageReleaseNotes>Performance improvements and useful features.</PackageReleaseNotes>
+        <PackageReleaseNotes>XML and JSON serialization support.</PackageReleaseNotes>
         <Nullable>enable</Nullable>  
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
         <PackageReadmeFile>README.md</PackageReadmeFile>
         <IncludeBuildOutput>false</IncludeBuildOutput>
-        <PackageTags>source-generator</PackageTags>
+        <PackageTags>source-generator;enum</PackageTags>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <RepositoryType>git</RepositoryType>
         <RepositoryUrl>https://github.com/MMaximus111/StaticDictionaries</RepositoryUrl>
