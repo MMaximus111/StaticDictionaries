@@ -12,9 +12,6 @@ public class RareCaseTests
         EnumWithFlagsAsStaticDictionary.Friday.Name().Should().Be("Friday");
         EnumWithFlagsAsStaticDictionary.Saturnday.Name().Should().Be("Saturnday");
 
-        EnumWithFlagsAsStaticDictionary.Weekend.Name().Should().Be(default);
-        EnumWithFlagsAsStaticDictionary.Weekend.Id().Should().Be(default);
-
         EnumWithFlagsAsStaticDictionaryExtensions.All().Length.Should().Be(7);
         EnumWithFlagsAsStaticDictionaryExtensions.MaxId.Should().Be(7);
         EnumWithFlagsAsStaticDictionaryExtensions.MinId.Should().Be(1);
@@ -23,6 +20,14 @@ public class RareCaseTests
     [Fact]
     public void EnumInheritedFromByteMustWorkCorrect()
     {
-        
+        EnumInheritedFromByte.Brad.Name().Should().Be("Brad");
+        EnumInheritedFromByte.Kevin.Id().Should().Be(255);
+    }
+
+    [Fact]
+    public void EnumInheritedFromShortMustWorkCorrect()
+    {
+        EnumInheritedFromShort.Brad.Name().Should().Be("Brad");
+        EnumInheritedFromShort.Kevin.Id().Should().Be(255);
     }
 }

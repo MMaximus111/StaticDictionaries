@@ -19,7 +19,6 @@ public enum EnumWithFlagsAsStaticDictionary
     [Value]
     Saturnday = 6,
     [Value]
-    Sunday = Monday | Tuesday,
-    [Value]
+    Sunday = 7,
     Weekend = Wednesday | Thursday
 }

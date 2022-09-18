@@ -1,8 +1,10 @@
-﻿using StaticDictionaries.Attributes;
+﻿using System.ComponentModel;
+using StaticDictionaries.Attributes;
 
 namespace StaticDictionaries.Tests.StaticDictionaries;
 
 [StaticDictionary]
+[AmbientValue("qwerty")]
 public enum EnumInheritedFromShort : short
 {
     [Value]
