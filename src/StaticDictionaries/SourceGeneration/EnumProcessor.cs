@@ -152,10 +152,7 @@ internal static class EnumProcessor
             {
                 string constantValue = field.ConstantValue.ToString();
 
-                if (!int.TryParse(constantValue, out int idValue))
-                {
-                    idValue = Convert.ToInt32(constantValue);
-                }
+                int idValue = int.Parse(constantValue);
 
                 membersWithValueAttribute.Add(new EnumMemberDefinition(idValue, member.Name, memberProperties.ToList()));
             }
