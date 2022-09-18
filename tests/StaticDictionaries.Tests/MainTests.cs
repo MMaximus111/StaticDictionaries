@@ -77,6 +77,13 @@ public class MainTests
     }
 
     [Fact]
+    public void IdPropertyMustOverrideDefaultIdOfMember()
+    {
+        EnumWithOverriddenIdProperty.Chair.Id().Should().Be(19);
+        EnumWithOverriddenIdProperty.Table.Id().Should().Be(7);
+    }
+
+    [Fact]
     public void MaxIdMustReturnMaxEnumMemberId()
     {
         const int maxId = EmployeeExtensions.MaxId;

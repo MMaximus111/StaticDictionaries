@@ -150,7 +150,14 @@ internal static class EnumProcessor
 
             if (containsValueAttribute)
             {
-                membersWithValueAttribute.Add(new EnumMemberDefinition((int)field.ConstantValue, member.Name, memberProperties.ToList()));
+                string constantValue = field.ConstantValue.ToString();
+
+                if (!int.TryParse(constantValue, out int idValue))
+                {
+                    idValue = Convert.ToInt32(constantValue);
+                }
+
+                membersWithValueAttribute.Add(new EnumMemberDefinition(idValue, member.Name, memberProperties.ToList()));
             }
         }
 

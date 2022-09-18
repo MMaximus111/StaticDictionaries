@@ -643,4 +643,31 @@ namespace StaticDictionaries.Tests.StaticDictionaries
 
         diagnostics.Should().BeNullOrEmpty();
     }
+
+    [Fact]
+    public void EnumWithoutJsonAndXmlAttributesMustNotGenerateJsonAndXmlMethods()
+    {
+        const string input = @"
+
+using StaticDictionaries.Attributes;
+
+namespace StaticDictionaries.Tests.StaticDictionaries
+{
+    [StaticDictionary(""Logo"")]
+    public enum EnumWithXmlAndJsonSupport
+    {
+        [Value(""Logo1"")]
+        Value1 = 1,
+        [Value(""Logo2"")]
+        Value2 = 2
+    }
+}";
+
+        (ImmutableArray<Diagnostic> diagnostics, string output) = CompilationTestHelper.GetGeneratedOutput<StaticDictionaryGenerator>(input);
+
+        output.Should().NotContain("Json()");
+        output.Should().NotContain("Xml()");
+
+        diagnostics.Should().BeNullOrEmpty();
+    }
 }
