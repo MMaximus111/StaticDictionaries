@@ -145,6 +145,7 @@ public static void Main()
 * `enum` members without `[Value]` attribute will be ignored.
 * `enum` property names must not be equal to [EnumName]Extensions (c# naming rules for methods).
 * `Json()` and `Xml()` methods generated only if you mark `enum` with `[JsonSupport]` or `[XmlSupport]`. 
+* `enum` members that use bitwise operators must not contain [Value] attribute.
 * Parameter types are determined automatically, so all parameters in a sequence must be of the same type.
 For example, all of the first types should be `string`, and all of the second types should be `bool`.
 
