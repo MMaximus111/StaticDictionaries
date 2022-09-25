@@ -49,7 +49,7 @@ string surname = User.John.Surname();
 
 ## Powerful `enum` management 🦾
 
-Source generator creates some methods in [EnumName]Extensions class for convenient and fast `enum` management:
+Source generator creates some methods in `[EnumName]Extensions` class for convenient and fast `enum` management:
 
 * `Length` quantity of all enum members.
 * `MinId` returns min `Id()`.
