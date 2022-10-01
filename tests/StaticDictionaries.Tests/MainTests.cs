@@ -1,4 +1,6 @@
-﻿using FluentAssertions;
+﻿using System.Xml;
+using FluentAssertions;
+using Newtonsoft.Json.Linq;
 using StaticDictionaries.Tests.StaticDictionaries;
 using Xunit;
 
@@ -153,10 +155,9 @@ public class MainTests
     }
 
     [Fact]
-    public void XmlAndJsonSerializationMustWorkCorrect()
+    public void JsonSerializationMustWorkCorrect()
     {
         string json = EnumWithSerializationSupportExtensions.Json();
-        string xml = EnumWithSerializationSupportExtensions.Xml();
 
         json.Should().Contain(@"""Nick"": ""CaesarTurbo""");
         json.Should().Contain(@"""Cost"": 12.23");
@@ -167,13 +168,27 @@ public class MainTests
         json.Should().Contain("}");
         json.Should().Contain(",");
 
+        JArray jArray = JArray.Parse(json);
+
+        jArray.Count.Should().Be(EnumWithSerializationSupportExtensions.Length);
+    }
+
+    [Fact]
+    public void XmlSerializationMustWorkCorrect()
+    {
+        string xml = EnumWithSerializationSupportExtensions.Xml();
+
         xml.Should().Contain(@"<?xml version=""1.0"" encoding=""UTF-8""?>");
         xml.Should().Contain(@"<Nick>MisterMuscle</Nick>");
         xml.Should().Contain(@"<Id>3</Id>");
         xml.Should().Contain(@"<Age>22</Age>");
         xml.Should().Contain(@"<Active>True</Active>");
-        xml.Should().Contain(@"</xml>");
         xml.Should().Contain(@"<Lobster>");
         xml.Should().Contain(@"<Mister>");
+        xml.Should().Contain(@"<root>");
+        xml.Should().Contain(@"</root>");
+
+        XmlDocument xmlDoc = new XmlDocument();
+        xmlDoc.LoadXml(xml);
     }
 }

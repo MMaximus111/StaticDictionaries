@@ -92,10 +92,11 @@ internal static class SourceGenerationHelper
         StringBuilder xmlBuilder = new StringBuilder();
 
         xmlBuilder.AppendLine(@"<?xml version=""1.0"" encoding=""UTF-8""?>");
+        xmlBuilder.AppendLine("  <root>");
 
         foreach (EnumMemberDefinition? member in dictionaryToGenerate.Members)
         {
-            xmlBuilder.AppendLine($"  <{member.MemberName}>");
+            xmlBuilder.AppendLine($"    <{member.MemberName}>");
 
             int i = 0;
 
@@ -103,15 +104,15 @@ internal static class SourceGenerationHelper
             {
                 string propertyName = propertyNames[i];
 
-                xmlBuilder.AppendLine($"    <{propertyName}>{memberValue}</{propertyName}>");
+                xmlBuilder.AppendLine($"      <{propertyName}>{memberValue}</{propertyName}>");
 
                 i++;
             }
 
-            xmlBuilder.AppendLine($"  </{member.MemberName}>");
+            xmlBuilder.AppendLine($"    </{member.MemberName}>");
         }
 
-        xmlBuilder.AppendLine(@"</xml>");
+        xmlBuilder.AppendLine("  </root>");
 
         sb.AppendLine($@"return {ToLiteral(xmlBuilder.ToString())};");
 
@@ -139,26 +140,29 @@ internal static class SourceGenerationHelper
 
         jsonBuilder.AppendLine("[");
 
-        foreach (EnumMemberDefinition? member in dictionaryToGenerate.Members)
+        string jsonItems = string.Join(",\n", dictionaryToGenerate.Members.Select(x =>
         {
-            jsonBuilder.AppendLine("  {");
+            StringBuilder jsonItemBuilder = new StringBuilder();
+
+            jsonItemBuilder.AppendLine("  {");
 
             int i = 0;
 
-            foreach (object? memberValue in member.Values)
+            foreach (object? memberValue in x.Values)
             {
                 string propertyName = propertyNames[i];
 
-                jsonBuilder.AppendLine(@$"    ""{propertyName}"": {ToLiteral(memberValue ?? "null")}");
+                jsonItemBuilder.AppendLine(@$"    ""{propertyName}"": {ToLiteral(memberValue ?? "null")},");
 
                 i++;
             }
 
-            jsonBuilder.AppendLine("  },");
-        }
+            jsonItemBuilder.Append("  }");
 
-        // remove last comma
-        jsonBuilder.Remove(jsonBuilder.Length - 1, 1);
+            return jsonItemBuilder.ToString();
+        }));
+
+        jsonBuilder.Append(jsonItems);
 
         jsonBuilder.AppendLine("]");
 
