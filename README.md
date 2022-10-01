@@ -56,8 +56,8 @@ Source generator creates some methods in `[EnumName]Extensions` class for conven
 * `MaxId` returns max `Id()`.
 * `All()` returns an array of all `enum` members.
 * `GetById()` returns member or `NotSupportedException`.
-* `Json()` returns serialized `enum` in json format (next release 1.2.0).
-* `Xml()` returns serialized `enum` in xml format (next release 1.2.0).
+* `Json()` returns serialized `enum` in json format.
+* `Xml()` returns serialized `enum` in xml format.
 
 ## Dictionary supported primitive types 🗿
 
