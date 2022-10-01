@@ -670,4 +670,69 @@ namespace StaticDictionaries.Tests.StaticDictionaries
 
         diagnostics.Should().BeNullOrEmpty();
     }
+
+    [Theory]
+    [InlineData("qwerty", true, 0.0)]
+    [InlineData(":", false, 1.11)]
+    [InlineData(null, true, 0)]
+    [InlineData("", false, 999_090.999)]
+    public void EnumWithJsonSupportAttributeMustGenerateCorrectJson(string textInput, bool booleanInput, decimal decimalInput)
+    {
+        string input = @$"
+
+using StaticDictionaries.Attributes;
+
+namespace StaticDictionaries.Tests.StaticDictionaries
+{{
+    [JsonSupport]
+    [StaticDictionary(""TextInput"", ""BooleanInput"", ""DecimalInput"")]
+    public enum EnumWithJsonSupport
+    {{
+        [Value(""{textInput}"", {booleanInput.ToString().ToLower()}, {decimalInput})]
+        Value1 = 1,
+        [Value(""{textInput}"", {booleanInput.ToString().ToLower()}, {decimalInput})]
+        Value2 = 2
+    }}
+}}";
+
+        (ImmutableArray<Diagnostic> diagnostics, string output) = CompilationTestHelper.GetGeneratedOutput<StaticDictionaryGenerator>(input);
+
+        output.Should().Contain("Json()");
+        output.Contains($@"\""DecimalInput\"": {decimalInput},").Should().BeTrue();
+
+        diagnostics.Should().BeNullOrEmpty();
+    }
+
+    [Theory]
+    [InlineData("qwerty:", true, 0.0)]
+    [InlineData(":", false, 2.22)]
+    [InlineData(null, true, 0)]
+    [InlineData("", false, 777_098.1101)]
+    [InlineData("   ", true, 1.1)]
+    public void EnumWithXmlSupportAttributeMustGenerateCorrectXml(string textInput, bool booleanInput, decimal decimalInput)
+    {
+        string input = @$"
+
+using StaticDictionaries.Attributes;
+
+namespace StaticDictionaries.Tests.StaticDictionaries
+{{
+    [XmlSupport]
+    [StaticDictionary(""TextInput"", ""BooleanInput"", ""DecimalInput"")]
+    public enum EnumWithJsonSupport
+    {{
+        [Value(""{textInput}"", {booleanInput.ToString().ToLower()}, {decimalInput})]
+        Value1 = 1,
+        [Value(""{textInput}"", {booleanInput.ToString().ToLower()}, {decimalInput})]
+        Value2 = 2
+    }}
+}}";
+
+        (ImmutableArray<Diagnostic> diagnostics, string output) = CompilationTestHelper.GetGeneratedOutput<StaticDictionaryGenerator>(input);
+
+        output.Should().Contain("Xml()");
+        output.Contains($"<DecimalInput>{decimalInput}</DecimalInput>").Should().BeTrue();
+
+        diagnostics.Should().BeNullOrEmpty();
+    }
 }

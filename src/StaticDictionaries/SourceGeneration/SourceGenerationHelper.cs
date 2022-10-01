@@ -268,7 +268,8 @@ internal static class SourceGenerationHelper
 
     private static void GenerateMinAndMaxProperties(EnumDictionaryToGenerate dictionaryToGenerate, StringBuilder sb)
     {
-        sb.Append(@"/// <summary>
+        sb.Append(@"
+    /// <summary>
     /// Max id of enum.
     /// Returns identifier of member that cannot be overridden by attribute arguments.
     /// </summary>
@@ -276,7 +277,8 @@ internal static class SourceGenerationHelper
 
         sb.AppendLine();
 
-        sb.Append(@"/// <summary>
+        sb.Append(@"
+    /// <summary>
     /// Min id of enum.
     /// Returns identifier of member that cannot be overridden by attribute arguments.
     /// </summary>
@@ -293,6 +295,7 @@ internal static class SourceGenerationHelper
         /// This is a non-distinct count of defined names.
         /// </summary>");
         sb.AppendLine();
+        sb.Append("    ");
         sb.AppendLine(@$"public const int Length = {dictionaryToGenerate.Members.Count};");
 
         sb.AppendLine();

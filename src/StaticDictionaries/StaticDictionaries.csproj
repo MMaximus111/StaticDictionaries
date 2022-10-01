@@ -7,7 +7,6 @@
         <LangVersion>10</LangVersion>
         <Authors>Maxim Usatenko</Authors>
         <VersionPrefix>1.2.0</VersionPrefix>
-        <VersionSuffix>preview.1</VersionSuffix>
         <PackageIcon>dictionary.png</PackageIcon>
         <ImplicitUsings>enable</ImplicitUsings>
         <PackageLicenseFile>LICENSE</PackageLicenseFile>
