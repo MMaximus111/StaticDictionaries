@@ -1,25 +1,25 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFrameworks>net6.0;net461</TargetFrameworks>
+        <TargetFrameworks>net7.0;net6.0;net461</TargetFrameworks>
         <ImplicitUsings>enable</ImplicitUsings>
-        <LangVersion>10</LangVersion>
+        <LangVersion>11</LangVersion>
         <IsPackable>false</IsPackable>
     </PropertyGroup>
 
     <ItemGroup>
         <ProjectReference Include="..\..\src\StaticDictionaries.Attributes\StaticDictionaries.Attributes.csproj" />
         <ProjectReference Include="..\..\src\StaticDictionaries\StaticDictionaries.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="true" />
-        <PackageReference Include="FluentAssertions" Version="6.7.0" />
-        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.11.0" />
-        <PackageReference Include="Verify.Xunit" Version="14.3.0" />
-        <PackageReference Include="xunit" Version="2.4.1" />
+        <PackageReference Include="FluentAssertions" Version="6.8.0" />
+        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.4.0" />
+        <PackageReference Include="Verify.Xunit" Version="19.0.0" />
+        <PackageReference Include="xunit" Version="2.4.2" />
 
         <PackageReference Include="xunit.runner.visualstudio" Version="2.4.3">
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
             <PrivateAssets>all</PrivateAssets>
         </PackageReference>
-        <PackageReference Include="coverlet.collector" Version="3.1.0">
+        <PackageReference Include="coverlet.collector" Version="3.2.0">
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
             <PrivateAssets>all</PrivateAssets>
         </PackageReference>

@@ -6,13 +6,13 @@
         <TargetFramework>netstandard2.0</TargetFramework>
         <LangVersion>10</LangVersion>
         <Authors>Maxim Usatenko</Authors>
-        <VersionPrefix>1.2.0</VersionPrefix>
+        <VersionPrefix>1.3.0</VersionPrefix>
         <PackageIcon>dictionary.png</PackageIcon>
         <ImplicitUsings>enable</ImplicitUsings>
         <PackageLicenseFile>LICENSE</PackageLicenseFile>
         <Description>Simple high performance solution for data hardcoding. Smart. Flexible. Powerful.</Description>
-        <PackageReleaseNotes>XML and JSON serialization support.</PackageReleaseNotes>
-        <Nullable>enable</Nullable>  
+        <PackageReleaseNotes>.NET7 support</PackageReleaseNotes>
+        <Nullable>enable</Nullable>
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
         <PackageReadmeFile>README.md</PackageReadmeFile>
         <IncludeBuildOutput>false</IncludeBuildOutput>
@@ -28,9 +28,9 @@
         <None Include="..\..\README.md" Pack="true" PackagePath="" />
         <None Include="..\..\images\dictionary.png" Pack="true" PackagePath="" />
 
-        <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.2.0" />
+        <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.3.1" />
         <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="3.3.3">
-            <PrivateAssets>all</PrivateAssets>  
+            <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
         <PackageReference Include="Microsoft.Net.Compilers" Version="4.2.0">

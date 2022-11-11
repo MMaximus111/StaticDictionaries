@@ -1,14 +1,15 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>net6.0</TargetFramework>
+        <TargetFrameworks>net6.0;net7.0;net4.6.2</TargetFrameworks>
+        <LangVersion>11</LangVersion>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <OutputType>Exe</OutputType>
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="BenchmarkDotNet" Version="0.13.1" />
+        <PackageReference Include="BenchmarkDotNet" Version="0.13.2" />
         <ProjectReference Include="..\..\src\StaticDictionaries.Attributes\StaticDictionaries.Attributes.csproj" />
         <ProjectReference Include="..\..\src\StaticDictionaries\StaticDictionaries.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="true" />
     </ItemGroup>

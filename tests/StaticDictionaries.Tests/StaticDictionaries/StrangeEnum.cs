@@ -1,6 +1,5 @@
 ﻿using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
-using Newtonsoft.Json;
+using Argon;
 using StaticDictionaries.Attributes;
 
 namespace StaticDictionaries.Tests.StaticDictionaries;
