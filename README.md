@@ -10,7 +10,7 @@
 Simple high performance solution for data hardcoding.
 Smart. Flexible. Powerful.
 
-Powered by source generators. Without using reflection.
+Powered by source generators. Without using reflection. `.NET 7 now supported ⚒`
 
 StaticDictionaries is a convinient library for data hardcoding in your project.
 Just decorate the `enum` using attributes, the source generator will do the rest for you.
