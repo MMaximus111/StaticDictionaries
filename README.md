@@ -101,7 +101,7 @@ public enum Status
     New = 1,
     [Value("In progress", false)]
     InProgress = 2,
-    [Value("In progress", true)]
+    [Value("Completed", true)]
     Completed = 3
 }
 
