@@ -30,4 +30,12 @@ public class RareCaseTests
         EnumInheritedFromShort.Brad.Name().Should().Be("Brad");
         EnumInheritedFromShort.Kevin.Id().Should().Be(255);
     }
+
+    [Fact]
+    public void EnumWithEnumPropertyMustWorkCorrect()
+    {
+        Company123.Apple.ChildCompany();
+
+        string name = ((object)Company123.Apple).GetType().Name;
+    }
 }

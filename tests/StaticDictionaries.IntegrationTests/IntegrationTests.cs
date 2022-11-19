@@ -1,4 +1,6 @@
+using System.Xml;
 using FluentAssertions;
+using Newtonsoft.Json.Linq;
 using StaticDictionaries.IntegrationTests.StaticDictionaries;
 
 namespace StaticDictionaries.IntegrationTests;
@@ -36,5 +38,21 @@ public class IntegrationTests
 
         Brands.Apple.Active().Should().BeTrue();
         Brands.Samsung.Active().Should().BeTrue();
+    }
+
+    [Fact]
+    public void XmlSupport()
+    {
+        string xml = EnumWithXmlSupportExtensions.Xml();
+        XmlDocument xmlDoc = new XmlDocument();
+        xmlDoc.LoadXml(xml);
+    }
+
+    [Fact]
+    public void JsonSupport()
+    {
+        string json = EnumWithJsonSupportExtensions.Json();
+        JArray jArray = JArray.Parse(json);
+        jArray.Count.Should().Be(EnumWithJsonSupportExtensions.Length);
     }
 }
