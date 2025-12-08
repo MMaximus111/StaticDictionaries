@@ -10,7 +10,7 @@
 Simple high performance solution for data hardcoding.
 Smart. Flexible. Powerful.
 
-Powered by source generators. Without using reflection. `.NET 7 now supported ⚒`
+Powered by source generators. Without using reflection. `.NET 10 now supported ⚒`
 
 StaticDictionaries is a convinient library for data hardcoding in your project.
 Just decorate the `enum` using attributes, the source generator will do the rest for you.
@@ -61,7 +61,7 @@ Source generator creates some methods in `[EnumName]Extensions` class for conven
 
 ## Dictionary supported primitive types 🗿
 
-|  CLR type  | Status | 
+|  CLR type  | Status |
 |------------|-------|
 | `int`   |✅|
 | `bool`   |✅|
@@ -86,7 +86,7 @@ public static void Main()
 {
     int johnAge = Employee.John.Age();
     int maximAge = Employee.Maxim.Age();
-    
+
     string johnName = Employee.John.Name();
     string maximName = Employee.Maxim.Name();
 }
@@ -108,7 +108,7 @@ public enum Status
 public static void Main()
 {
     Status status = StatusExtensions.GetById(2);
-    
+
     Status[] statuses = StatusExtensions
                       .All()
                       .Where(x => !x.IsLast())
@@ -129,7 +129,7 @@ public enum Metal
 
 public static void Main()
 {
-    int goldId = Metal.Gold.Id(); 
+    int goldId = Metal.Gold.Id();
     string ferrumName = Metal.Ferrum.Name();
 }
 
@@ -140,11 +140,11 @@ public static void Main()
 * `[StaticDictionary]` parameter names must not be duplicated.
 * `[StaticDictionary]` parameter names must use the English alphabet only because they will be generated into methods.
 * All `[Value]` attrubutes must contain such arguments quantity as `[StaticDictionary]`.
-* All `[StaticDictionary]` `enum` members can contain `[Value]` attribute with arguments. 
+* All `[StaticDictionary]` `enum` members can contain `[Value]` attribute with arguments.
 * Generator creates two methods by default: `Id()` with `(int)member` and `Name()` with `nameof(member)` if you do not override them.
 * `enum` members without `[Value]` attribute will be ignored.
 * `enum` property names must not be equal to [EnumName]Extensions (c# naming rules for methods).
-* `Json()` and `Xml()` methods generated only if you mark `enum` with `[JsonSupport]` or `[XmlSupport]`. 
+* `Json()` and `Xml()` methods generated only if you mark `enum` with `[JsonSupport]` or `[XmlSupport]`.
 * `enum` members that use bitwise operators must not contain [Value] attribute.
 * Parameter types are determined automatically, so all parameters in a sequence must be of the same type.
 For example, all of the first types should be `string`, and all of the second types should be `bool`.
