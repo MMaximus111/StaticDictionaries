@@ -11,7 +11,7 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <PackageLicenseFile>LICENSE</PackageLicenseFile>
         <Description>Simple high performance solution for data hardcoding. Smart. Flexible. Powerful.</Description>
-        <PackageReleaseNotes>.NET7 support</PackageReleaseNotes>
+        <PackageReleaseNotes>.net10 support</PackageReleaseNotes>
         <Nullable>enable</Nullable>
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
         <PackageReadmeFile>README.md</PackageReadmeFile>
