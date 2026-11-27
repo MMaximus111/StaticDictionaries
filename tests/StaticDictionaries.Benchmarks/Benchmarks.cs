@@ -14,7 +14,7 @@ public class Benchmarks
     [Benchmark]
     public void GeneratedAccessToMemberName()
     {
-        string porscheName = Cars.Bmw.Name();
+        string porscheName = Cars.Bmw.Name;
     }
 
     [Benchmark]

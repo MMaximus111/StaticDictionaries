@@ -31,7 +31,7 @@ internal static class SourceGenerationHelper
 
         GenerateMinAndMaxProperties(dictionaryToGenerate, sb);
 
-        GeneratePropertiesMethods(dictionaryToGenerate, sb, propertyNames);
+        GenerateProperties(dictionaryToGenerate, sb, propertyNames);
 
         GenerateGetByIdMethod(dictionaryToGenerate, sb, propertyNames);
 
@@ -203,36 +203,41 @@ internal static class SourceGenerationHelper
         }
     }
 
-    private static void GeneratePropertiesMethods(EnumDictionaryToGenerate dictionaryToGenerate, StringBuilder sb, IReadOnlyCollection<string> propertyNames)
+    private static void GenerateProperties(EnumDictionaryToGenerate dictionaryToGenerate, StringBuilder sb, IReadOnlyCollection<string> propertyNames)
     {
+        sb.AppendLine(@$"        extension({dictionaryToGenerate.Name} member)");
+        sb.AppendLine("        {");
+
         int i = 0;
         foreach (string propertyName in propertyNames)
         {
             Type type = dictionaryToGenerate.PropertyTypes[i];
 
-            sb.AppendLine(@"
-        /// <summary>
-        /// Generated method by StaticDictionaries.
-        /// </summary>
-        /// <returns>Value for defined property.</returns>");
+            sb.AppendLine(@"            /// <summary>
+            /// Generated property by StaticDictionaries.
+            /// </summary>
+            /// <returns>Value for defined property.</returns>");
 
-            sb.AppendLine(@$"public static {type.Name} {propertyName}(this {dictionaryToGenerate.Name} member)");
-            sb.Append("{");
-            sb.AppendLine();
+            sb.AppendLine(@$"            public {type.Name} {propertyName}");
+            sb.AppendLine("            {");
+            sb.AppendLine("                get");
+            sb.AppendLine("                {");
 
             foreach ((string MemberName, object value) property in dictionaryToGenerate.Members.Select(x => (x.MemberName, x.Values[i]!)))
             {
-                sb.AppendLine($"if (member == {dictionaryToGenerate.Name}.{property.MemberName})");
-                sb.AppendLine($"return {ToLiteral(property.value)};");
+                sb.AppendLine($"                    if (member == {dictionaryToGenerate.Name}.{property.MemberName})");
+                sb.AppendLine($"                        return {ToLiteral(property.value)};");
             }
 
-            sb.AppendLine("return default;");
-            sb.AppendLine("}");
+            sb.AppendLine("                    return default;");
+            sb.AppendLine("                }");
+            sb.AppendLine("            }");
             sb.AppendLine();
 
             i++;
         }
 
+        sb.AppendLine("        }");
         sb.AppendLine();
     }
 

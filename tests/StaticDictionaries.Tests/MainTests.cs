@@ -10,13 +10,13 @@ public class MainTests
     [Fact]
     public void AccessProperty()
     {
-        int johnAge = Employee.John.Age();
-        int maximAge = Employee.Maxim.Age();
-        bool maximActive = Employee.Maxim.Active();
-        bool johnActive = Employee.John.Active();
-        string maximName = Employee.Maxim.Name();
-        string johnName = Employee.John.Name();
-        char completedSymbol = Status.Completed.Symbol();
+        int johnAge = Employee.John.Age;
+        int maximAge = Employee.Maxim.Age;
+        bool maximActive = Employee.Maxim.Active;
+        bool johnActive = Employee.John.Active;
+        string maximName = Employee.Maxim.Name;
+        string johnName = Employee.John.Name;
+        char completedSymbol = Status.Completed.Symbol;
 
         johnAge.Should().Be(23);
         maximAge.Should().Be(18);
@@ -54,8 +54,8 @@ public class MainTests
     [Fact]
     public void AccessGeneratedIdAndNameProperties()
     {
-        int id = EnumWithoutSettedIdAndName.Value1.Id();
-        string name = EnumWithoutSettedIdAndName.Value2.Name();
+        int id = EnumWithoutSettedIdAndName.Value1.Id;
+        string name = EnumWithoutSettedIdAndName.Value2.Name;
 
         id.Should().Be(1);
         name.Should().Be(nameof(EnumWithoutSettedIdAndName.Value2));
@@ -64,8 +64,8 @@ public class MainTests
     [Fact]
     public void StaticDictionaryWithoutArgumentsMustGenerateNameAndIdProperties()
     {
-        string member1Name = StaticDictionaryWithoutArguments.Member1.Name();
-        int member2Id = StaticDictionaryWithoutArguments.Member2.Id();
+        string member1Name = StaticDictionaryWithoutArguments.Member1.Name;
+        int member2Id = StaticDictionaryWithoutArguments.Member2.Id;
 
         member1Name.Should().Be(nameof(StaticDictionaryWithoutArguments.Member1));
         member2Id.Should().Be((int)StaticDictionaryWithoutArguments.Member2);
@@ -74,14 +74,14 @@ public class MainTests
     [Fact]
     public void NamePropertyMustOverrideDefaultNameOfMember()
     {
-        Employee.Maxim.Name().Should().NotBeEquivalentTo(nameof(Employee.Maxim));
+        Employee.Maxim.Name.Should().NotBeEquivalentTo(nameof(Employee.Maxim));
     }
 
     [Fact]
     public void IdPropertyMustOverrideDefaultIdOfMember()
     {
-        EnumWithOverriddenIdProperty.Chair.Id().Should().Be(19);
-        EnumWithOverriddenIdProperty.Table.Id().Should().Be(7);
+        EnumWithOverriddenIdProperty.Chair.Id.Should().Be(19);
+        EnumWithOverriddenIdProperty.Table.Id.Should().Be(7);
     }
 
     [Fact]
@@ -97,11 +97,11 @@ public class MainTests
     [Fact]
     public void EnumWithDifferentDataTypesAndDuplicatedValueAttributeMustWorkWell()
     {
-        StrangeEnum.duck.Id().Should().Be((int)StrangeEnum.duck);
+        StrangeEnum.duck.Id.Should().Be((int)StrangeEnum.duck);
 
         StrangeEnumExtensions.Length.Should().Be(4);
-        StrangeEnum.Tiger.priCE().Should().Be(10.00);
-        StrangeEnum.Elephant.Active().Should().Be(true);
+        StrangeEnum.Tiger.priCE.Should().Be(10.00);
+        StrangeEnum.Elephant.Active.Should().Be(true);
 
         StrangeEnumExtensions.MinId.Should().Be(1);
         StrangeEnumExtensions.MaxId.Should().Be(1000000);
@@ -117,7 +117,7 @@ public class MainTests
     [InlineData(Status.LastStatus)]
     public void DefaultIdMethodMustWorkCorrect(Status status)
     {
-        status.Id().Should().Be((int)status);
+        status.Id.Should().Be((int)status);
     }
 
     [Theory]
@@ -125,7 +125,7 @@ public class MainTests
     [InlineData(Employee.Maxim)]
     public void NameMethodMustWorkCorrect(Employee employee)
     {
-        employee.Id().Should().Be((int)employee);
+        employee.Id.Should().Be((int)employee);
     }
 
     [Theory]
@@ -135,7 +135,7 @@ public class MainTests
     [InlineData(9999999, OverriddenIdProperty.Member4)]
     public void GetByIdMustFindByOverridenIdIfItExists(int overriddenId, OverriddenIdProperty enumMember)
     {
-        enumMember.Id().Should().Be(overriddenId);
+        enumMember.Id.Should().Be(overriddenId);
 
         OverriddenIdPropertyExtensions.GetById(overriddenId).Should().Be(enumMember);
     }
@@ -143,14 +143,14 @@ public class MainTests
     [Fact]
     public void EnumWithIntAndDoubleMustWotkCorrectAndConvertIntToDoubleType()
     {
-        double member1Price = EnumWithIntAndDouble.Member1.Price();
+        double member1Price = EnumWithIntAndDouble.Member1.Price;
         member1Price.Should().Be(67.89);
 
-        double member2Price = EnumWithIntAndDouble.Member2.Price2();
+        double member2Price = EnumWithIntAndDouble.Member2.Price2;
         member2Price.Should().Be(100.123);
 
-        EnumWithIntAndDouble.Member1.Id().Should().Be(1);
-        EnumWithIntAndDouble.Member2.Id().Should().Be(2);
+        EnumWithIntAndDouble.Member1.Id.Should().Be(1);
+        EnumWithIntAndDouble.Member2.Id.Should().Be(2);
     }
 
     [Fact]
