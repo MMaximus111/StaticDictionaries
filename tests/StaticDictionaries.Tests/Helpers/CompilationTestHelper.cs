@@ -10,7 +10,8 @@ internal class CompilationTestHelper
     public static (ImmutableArray<Diagnostic> Diagnostics, string Output) GetGeneratedOutput<T>(string source)
         where T : IIncrementalGenerator, new()
     {
-        SyntaxTree syntaxTree = CSharpSyntaxTree.ParseText(source);
+        CSharpParseOptions parseOptions = new CSharpParseOptions(LanguageVersion.Preview);
+        SyntaxTree syntaxTree = CSharpSyntaxTree.ParseText(source, parseOptions);
 
         IEnumerable<PortableExecutableReference> references = AppDomain.CurrentDomain.GetAssemblies()
             .Where(_ => !_.IsDynamic && !string.IsNullOrWhiteSpace(_.Location))
@@ -30,7 +31,9 @@ internal class CompilationTestHelper
         int originalTreeCount = compilation.SyntaxTrees.Length;
         T generator = new T();
 
-        CSharpGeneratorDriver driver = CSharpGeneratorDriver.Create(generator);
+        GeneratorDriver driver = CSharpGeneratorDriver.Create(
+            new[] { generator.AsSourceGenerator() },
+            parseOptions: parseOptions);
 
         driver.RunGeneratorsAndUpdateCompilation(compilation, out Compilation outputCompilation, out ImmutableArray<Diagnostic> diagnostics);
 

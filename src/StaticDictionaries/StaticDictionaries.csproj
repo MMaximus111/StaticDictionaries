@@ -4,7 +4,7 @@
         <PackageId>StaticDictionaries</PackageId>
         <Title>StaticDictionaries</Title>
         <TargetFramework>netstandard2.0</TargetFramework>
-        <LangVersion>10</LangVersion>
+        <LangVersion>latest</LangVersion>
         <Authors>Maxim Usatenko</Authors>
         <VersionPrefix>1.3.1</VersionPrefix>
         <PackageIcon>dictionary.png</PackageIcon>
@@ -17,6 +17,7 @@
         <PackageReadmeFile>README.md</PackageReadmeFile>
         <IncludeBuildOutput>false</IncludeBuildOutput>
         <PackageTags>source-generator;enum</PackageTags>
+        <EnforceExtendedAnalyzerRules>true</EnforceExtendedAnalyzerRules>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <RepositoryType>git</RepositoryType>
         <RepositoryUrl>https://github.com/MMaximus111/StaticDictionaries</RepositoryUrl>
@@ -28,14 +29,10 @@
         <None Include="..\..\README.md" Pack="true" PackagePath="" />
         <None Include="..\..\images\dictionary.png" Pack="true" PackagePath="" />
 
-        <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.2.0" />
-        <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="3.3.3">
+        <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.14.0" />
+        <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="3.11.0">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-        </PackageReference>
-        <PackageReference Include="Microsoft.Net.Compilers" Version="4.2.0">
-          <PrivateAssets>all</PrivateAssets>
-          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
         <ProjectReference Include="..\StaticDictionaries.Attributes\StaticDictionaries.Attributes.csproj" PrivateAssets="All" />
 

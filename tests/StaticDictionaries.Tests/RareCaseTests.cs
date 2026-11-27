@@ -9,8 +9,8 @@ public class RareCaseTests
     [Fact]
     public void EnumWithFlagsMustWorkCorrectWithoutErrors()
     {
-        EnumWithFlagsAsStaticDictionary.Friday.Name().Should().Be("Friday");
-        EnumWithFlagsAsStaticDictionary.Saturnday.Name().Should().Be("Saturnday");
+        EnumWithFlagsAsStaticDictionary.Friday.Name.Should().Be("Friday");
+        EnumWithFlagsAsStaticDictionary.Saturnday.Name.Should().Be("Saturnday");
 
         EnumWithFlagsAsStaticDictionaryExtensions.All().Length.Should().Be(7);
         EnumWithFlagsAsStaticDictionaryExtensions.MaxId.Should().Be(7);
@@ -20,21 +20,21 @@ public class RareCaseTests
     [Fact]
     public void EnumInheritedFromByteMustWorkCorrect()
     {
-        EnumInheritedFromByte.Brad.Name().Should().Be("Brad");
-        EnumInheritedFromByte.Kevin.Id().Should().Be(255);
+        EnumInheritedFromByte.Brad.Name.Should().Be("Brad");
+        EnumInheritedFromByte.Kevin.Id.Should().Be(255);
     }
 
     [Fact]
     public void EnumInheritedFromShortMustWorkCorrect()
     {
-        EnumInheritedFromShort.Brad.Name().Should().Be("Brad");
-        EnumInheritedFromShort.Kevin.Id().Should().Be(255);
+        EnumInheritedFromShort.Brad.Name.Should().Be("Brad");
+        EnumInheritedFromShort.Kevin.Id.Should().Be(255);
     }
 
     [Fact]
     public void EnumWithEnumPropertyMustWorkCorrect()
     {
-        Company123.Apple.ChildCompany();
+        _ = Company123.Apple.ChildCompany;
 
         string name = ((object)Company123.Apple).GetType().Name;
     }
